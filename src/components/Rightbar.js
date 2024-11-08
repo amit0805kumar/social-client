@@ -23,7 +23,7 @@ export default function Rightbar() {
       <div className="adWrapper">
         <img
           alt="ad"
-          src="https://i.pinimg.com/564x/47/49/42/4749429f90ebd111dc91bbe9780308f0.jpg"
+          src="https://i.pinimg.com/originals/31/28/5d/31285de4c567d02b72f4c962645e7abb.gif"
         />
       </div>
       <div className="friendsWrapper">

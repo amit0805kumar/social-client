@@ -55,7 +55,7 @@ export const Users = [
     {
       id: 1,
       desc: "Love For All, Hatred For None.",
-      photo: "https://i.pinimg.com/736x/9b/8f/4c/9b8f4c7d9321da54a768a22fcfcca683.jpg",
+      photo: "https://i.pinimg.com/736x/f7/7f/3d/f77f3d58b4946ed111a14cb6436036de.jpg",
       date: "5 mins ago",
       userId: 1,
       like: 32,
@@ -63,7 +63,7 @@ export const Users = [
     },
     {
       id: 2,
-      photo: "https://i.pinimg.com/736x/52/9d/2f/529d2f042466c56d69eb658a8ea5ab0f.jpg",
+      photo: "https://69.media.tumblr.com/tumblr_lrrc2gYhMN1r3vk7qo1_500.gif",
       date: "15 mins ago",
       userId: 2,
       like: 2,
@@ -72,7 +72,7 @@ export const Users = [
     {
       id: 3,
       desc: "Every moment is a fresh beginning.",
-      photo: "https://i.pinimg.com/564x/88/3c/1b/883c1b030249661669eafa48f84de14f.jpg",
+      photo: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/7fa73d69-d43e-4ccc-9bb3-f8c39d8a7633/dahchhz-111d148b-c132-436d-8bd0-543e4ea0417e.gif?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzdmYTczZDY5LWQ0M2UtNGNjYy05YmIzLWY4YzM5ZDhhNzYzM1wvZGFoY2hoei0xMTFkMTQ4Yi1jMTMyLTQzNmQtOGJkMC01NDNlNGVhMDQxN2UuZ2lmIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.jw-2GR8_uvlW0aOgY-iHOZJo3zCC9I6ZPUQtvyrfTZI",
       date: "1 hour ago",
       userId: 3,
       like: 61,
