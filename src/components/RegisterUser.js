@@ -1,7 +1,8 @@
 import React from 'react'
 import { Button } from '@mui/material'
+import {Link} from 'react-router-dom'
 
-export default function Register() {
+export default function RegisterUser() {
   return (
     <div className='formWrapper'>
         <input placeholder='First Name' />
@@ -9,7 +10,7 @@ export default function Register() {
         <input placeholder='Password' type='password'/>
         <input placeholder='Re-enter Password' type='password' />
         <Button variant='contained' size="large">Register</Button>
-        <Button variant='contained' size="large" color="success">Login</Button>
+        <Link to="/login"><Button variant='contained' size="large" color="success">Login</Button></Link>
     </div>
   )
 }

@@ -1,28 +1,10 @@
 import React,{useEffect,useState} from 'react'
 import Friends from './Friends'
-import axios from 'axios';
+import { callApi } from '../helpers/Helpers';
+
 export default function UserInfo(props) {
-  const {user} = props;
-  const [followings,setFollowings] = useState([]);
 
-  const fecthFollowings = async ()=>{
-    try {
-      let followings = [];
-    await Promise.all(
-      user && user.followings.map(async (userId)=>{
-        let res = await axios.get(`users?userId=${userId}`)
-        followings.push(res.data.user);
-      })
-    )
-    setFollowings(followings);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  useEffect(()=>{
-    fecthFollowings();
-  },[])
-
+  const {followings} = props;
   return (
     <div className='userInfoWrapper'>
       <div className='basic'>
@@ -41,7 +23,7 @@ export default function UserInfo(props) {
         <h3>User friends</h3>
         <div className='friends_list'>
           {followings && followings.map(user=>{
-            return <Friends data={user} />
+            return <Friends key={user._id} data={user} />
           })}
         </div>
       </div>

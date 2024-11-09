@@ -16,9 +16,10 @@ export default function Topbar() {
   const handleLogout = ()=>{
     setLoggedIn(false);
     setUser({});
+    localStorage.removeItem("user");
     navigate("/login");
   }
-  return (
+  return user ? (
     <div className="topbar_container">
       <Link to="/"><h1 className="topbar_title">Social</h1></Link>
       <div className="topbar_searchbar">
@@ -44,9 +45,9 @@ export default function Topbar() {
         </div>
       </div>
       <div className="topbar_profile">
-      <Link to="/profile">
+      <Link to={`/profile/${user.username}`}>
       <Avatar alt="Profile pic" src={user.profilePicture} /></Link>
       </div>
     </div>
-  );
+  ) : null;
 }

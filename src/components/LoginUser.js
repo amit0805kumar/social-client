@@ -1,14 +1,15 @@
 import React, { useState, useContext } from "react";
 import { Button } from "@mui/material";
-import axios from "axios";
 import { MyContext } from "../MyContext";
 import { useNavigate } from 'react-router-dom';
+import {Link} from "react-router-dom";
+import {callApi} from "../helpers/Helpers";
 
 export default function LoginUser() {
     const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const {loggedIn,setUser,setLoggedIn} = useContext(MyContext);
+  const {setLoading,setUser,setLoggedIn} = useContext(MyContext);
 
   const handleChange = (e) => {
     switch (e.target.name) {
@@ -23,18 +24,22 @@ export default function LoginUser() {
 
   const handleLogin = async () => {
    try {
+    setLoading(true);
     if (email != "" && password != "") {
-        const loggedUser = await axios.post("auth/login", {
+        const loggedUser = await callApi("POST","auth/login", {
           email: email,
           password: password,
         });
         setLoggedIn(true);
         setUser(loggedUser.data);
+        localStorage.setItem("user",JSON.stringify(loggedUser.data));
         navigate("/");
-      } else {
+      } else {   
         alert("Invalid fields");
       }
+      setLoading(false)
    } catch (error) {
+    setLoading(false)
     alert("Incorrect login credentials!");
    }
   };
@@ -65,9 +70,10 @@ export default function LoginUser() {
       >
         Login
       </Button>
+      <Link to="/register">
       <Button variant="contained" size="large">
         Register
-      </Button>
+      </Button></Link>
     </div>
   );
 }

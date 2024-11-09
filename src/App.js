@@ -5,29 +5,40 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Profile from "./pages/Profile";
 import Login from "./pages/Login";
 import { MyContext } from "./MyContext";
-import axios from "axios";
-import { Navigate } from 'react-router-dom';
+import Register from "./pages/Register";
+import PrivateRoute from "./components/PrivateRoute";
+import Loader from "./components/Loader";
+import { Navigate } from "react-router-dom";
 function App() {
   const [user, setUser] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
-  const fetchUser = async () => {
-    const user = await axios.get(`users?userId=6727307303885087f887157e`);
-    if (user.status) {
-      setUser(user.data.user);
-    }
-  };
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    if(!user){
-      fetchUser();
+    const fetchedUser = JSON.parse(localStorage.getItem("user"));
+    if (fetchedUser) {
+      setUser(fetchedUser);
+      setLoggedIn(true);
     }
+    setLoading(false)
   }, []);
+
   return (
-    <MyContext.Provider value={{ user, setUser, loggedIn, setLoggedIn }}>
+    <MyContext.Provider value={{ user, setUser, loggedIn, setLoggedIn, setLoading }}>
+      <Loader visible={loading} />
       <Router>
         <Routes>
-          <Route exact path="/" element={<Home />} />
-          <Route exact path="/profile" element={<Profile />} />
+          <Route
+            path="/"
+            element={
+              <PrivateRoute setLoading={setLoading} Component={Home} />
+            }
+          />
+          <Route exact path="/profile/:username" element={<Profile />} />
           <Route exact path="/login" element={<Login />} />
+          <Route exact path="/register" element={<Register />} />
+
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
     </MyContext.Provider>

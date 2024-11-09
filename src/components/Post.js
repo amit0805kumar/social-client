@@ -2,17 +2,14 @@ import { Avatar } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import RecommendIcon from "@mui/icons-material/Recommend";
-import { Users } from "../dummyData";
-import {format} from "timeago.js"
-import axios from "axios";
-
+import { callApi } from "../helpers/Helpers";
 export default function Post(props) {
   const [user, setUser] = useState({});
   const { data } = props;
 
   const fetchUser = async () => {
     try {
-      const res = await axios(`users?userId=${data.userId}`);
+      const res = await callApi("GET",`users?userId=${data.userId}`);
       setUser(res.data.user);
     } catch (error) {
       console.log(error);
@@ -34,7 +31,7 @@ export default function Post(props) {
             <Avatar alt="profilepic" src={user.profilePicture} />
           </div>
           <p className="name">{user.username}</p>
-          <span className="time">{format(data.createdAt)}</span>
+          <span className="time">5 days ago</span>
         </div>
         <div className="col">
           <div className="post_options">

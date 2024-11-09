@@ -1,10 +1,9 @@
 import React from 'react'
-import LoginUser from '../components/LoginUser'
+import RegisterUser from '../components/RegisterUser'
 
-export default function Login() {
+export default function Register() {
   return (
-   <React.Fragment>
-     <div className='loginWrapper'>
+    <div className='loginWrapper'>
         <div className='loginbox'>
             <div className='col welcome'>
                 <h1>Social</h1>
@@ -12,11 +11,10 @@ export default function Login() {
             </div>
             <div className='col'>
                 <div className='form'>
-                    <LoginUser />
+                    <RegisterUser />
                 </div>
             </div>
         </div>
     </div>
-   </React.Fragment>
   )
 }
