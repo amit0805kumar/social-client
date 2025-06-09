@@ -1,16 +1,18 @@
 import { Avatar } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import RecommendIcon from "@mui/icons-material/Recommend";
 import { callApi } from "../helpers/Helpers";
+import { useSelector } from "react-redux";
 export default function Post(props) {
   const [user, setUser] = useState({});
   const { data } = props;
+  const token = useSelector((state) => state.auth.token);
 
   const fetchUser = async () => {
-    try {
-      const res = await callApi("GET",`users?userId=${data.userId}`);
-      setUser(res.data.user);
+    try { 
+      const res = await callApi("GET",`users/${data.userId}`,token);
+      setUser(res);
     } catch (error) {
       console.log(error);
     }

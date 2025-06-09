@@ -1,23 +1,25 @@
-import React, { useState, useEffect, useContext } from "react";
-import Topbar from "../components/Topbar";
-import Sidebar from "../components/Sidebar";
-import Feed from "../components/Feed";
-import Rightbar from "../components/Rightbar";
-import { MyContext } from "../MyContext";
+import React, { useEffect } from "react";
+import Topbar from "../layouts/Topbar";
+import Sidebar from "../layouts/Sidebar";
+import Feed from "../layouts/Feed";
+import Rightbar from "../layouts/Rightbar";
 import { callApi } from "../helpers/Helpers";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { fetchPostsFailure, fetchPostsStart, fetchPostsSuccess } from "../store/postSlice";
 export default function Home() {
-  const [posts, setPosts] = useState([]);
-  const { user, setLoading } = useContext(MyContext);
-
+  const dispatch = useDispatch();
+  const posts = useSelector((state) => state.post.posts);
+  const user = useSelector((state) => state.auth.user);
+  const token = useSelector((state) => state.auth.token);
   const fetchPosts = async (userId) => {
     try {
-      setLoading(true);
-      const res = await callApi("GET", `posts/timeline/${userId}`);
-      setPosts(res.data.data);
-      setLoading(false);
+       dispatch(fetchPostsStart());
+      const res = await callApi("GET", `posts/all/${userId}`,token);      
+      dispatch(fetchPostsSuccess(res.data))
     } catch (error) {
-      setLoading(false);
-      console.log(error);
+      dispatch(fetchPostsFailure(error.message));
+      console.error("Error fetching posts:", error);
     }
   };
 
@@ -32,7 +34,7 @@ export default function Home() {
       <Topbar />
       <div className="homeContainer">
         <Sidebar />
-        {user && <Feed posts={posts} />}
+        {<Feed posts={posts} shareTopVisible={true} />}
         <Rightbar />
       </div>
     </React.Fragment>

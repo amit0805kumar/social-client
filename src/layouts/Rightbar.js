@@ -2,7 +2,7 @@ import React from "react";
 import { Avatar } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Badge from "@mui/material/Badge";
-import { Users } from "../dummyData";
+import { Users } from "../utils/dummyData";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {

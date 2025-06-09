@@ -13,6 +13,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [token,setToken] = useState(null);
 
   useEffect(() => {
     const fetchedUser = JSON.parse(localStorage.getItem("user"));
@@ -24,7 +25,7 @@ function App() {
   }, []);
 
   return (
-    <MyContext.Provider value={{ user, setUser, loggedIn, setLoggedIn, setLoading }}>
+    <MyContext.Provider value={{ user, setUser, loggedIn, setLoggedIn, setLoading,token,setToken }}>
       <Loader visible={loading} />
       <Router>
         <Routes>
@@ -34,7 +35,7 @@ function App() {
               <PrivateRoute setLoading={setLoading} Component={Home} />
             }
           />
-          <Route exact path="/profile/:username" element={<Profile />} />
+          <Route exact path="/profile/:_id" element={<Profile />} />
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/register" element={<Register />} />
 

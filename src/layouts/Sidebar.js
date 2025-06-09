@@ -7,8 +7,27 @@ import WorkIcon from "@mui/icons-material/Work";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import { Avatar } from "@mui/material";
-import { Users } from "../dummyData";
+import { callApi } from "../helpers/Helpers";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 export default function Sidebar() {
+  const [users, setUser] = useState([]);
+  const user = useSelector((state) => state.auth.user);
+  const token = useSelector((state) => state.auth.token);
+  const fetchAllUsers = async () => {
+    try {
+      let allUsers = await callApi("GET", "users/", token);
+      setUser(allUsers.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAllUsers();
+  }, []);
+
   return (
     <div className="sidebar">
       <div className="sidebarWrapper">
@@ -49,15 +68,22 @@ export default function Sidebar() {
             <button className="showmore">Show more</button>
           </li>
           <hr />
-          {Users.map((user) => {
-            return <li key={user.id}>
-              <Avatar
-                sx={{ width: 25, height: 25 }}
-                alt="people"
-                src={user.profilePicture}
-              />
-              <p>{user.username}</p>
-            </li>;
+
+          <h5 className="suggetionHeading">Suggestions</h5>
+          {users.map((data) => {
+            if (user._id !== data._id)
+              return (
+                <Link to={`/profile/${data.username}`}>
+                  <li key={data.id}>
+                    <Avatar
+                      sx={{ width: 25, height: 25 }}
+                      alt="people"
+                      src={data.profilePicture}
+                    />
+                    <p>{data.username}</p>
+                  </li>
+                </Link>
+              );
           })}
         </ul>
       </div>

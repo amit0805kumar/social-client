@@ -76,7 +76,7 @@ a {
 .homeContainer {
   display: flex;
   width: 100%;
-  margin-top: 58px;
+  margin-top: 50px;
   padding: 0;
 }
 .feed {
@@ -95,6 +95,7 @@ a {
         border-radius: 8px;
         padding: 10px 20px;
         overflow: hidden;
+        margin-bottom: 40px;
         &_input {
           display: flex;
           margin: 20px 0;
@@ -148,7 +149,6 @@ a {
         }
       }
       .shareBottom {
-        margin-top: 40px;
         .postWrapper {
           box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16),
             0 3px 6px rgba(0, 0, 0, 0.23);
@@ -256,6 +256,10 @@ a {
         color: $grey-2;
       }
     }
+    .suggetionHeading{
+      color: $grey-2;
+      margin-bottom: 20px;
+    }
   }
 
   &::-webkit-scrollbar {
@@ -327,7 +331,7 @@ a {
 .profileContainer {
   display: flex;
   padding: 0;
-  margin-top: 58px;
+  margin-top: 50px;
   .sidebar {
     position: fixed;
     width: 250px;
@@ -472,7 +476,7 @@ a {
     color: #fff;
     margin-bottom: 20px;
   }
-  input {
+  input.urlInput {
     border: none;
     border-bottom: 1.5px solid #fff;
     outline: none;
@@ -551,4 +555,25 @@ a {
  align-items: center;
  justify-content: center;
 
+}
+
+.tools{
+  width: 100%;
+  margin-top: 40px;
+  background-color: rgb(246, 246, 246);
+  padding: 20px;
+  border-radius: 4px;
+  .row{
+    display: flex;
+    color: $grey-1;
+    align-items: center;
+    cursor: pointer;
+    div{
+      margin-left: 20px;
+    }
+  }
+}
+
+.profileFollow{
+  margin-bottom: 20px;
 }

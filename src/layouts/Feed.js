@@ -1,11 +1,12 @@
-import Share from "./Share";
+import Share from "../components/Share";
 
 export default function Feed(props) {
   return (
     <div className="feed">
       <div className="feedWrapper">
-        <Share posts={props.posts} />
+        <Share shareTopVisible={props.shareTopVisible} posts={props.posts} />
       </div>
     </div>
   )
 }
+

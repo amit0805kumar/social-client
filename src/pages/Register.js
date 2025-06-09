@@ -1,5 +1,5 @@
 import React from 'react'
-import RegisterUser from '../components/RegisterUser'
+import RegisterUser from '../layouts/RegisterUser'
 
 export default function Register() {
   return (
