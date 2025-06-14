@@ -4,35 +4,47 @@ import "./App.scss";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Profile from "./pages/Profile";
 import Login from "./pages/Login";
-import { MyContext } from "./MyContext";
 import Register from "./pages/Register";
 import PrivateRoute from "./components/PrivateRoute";
 import Loader from "./components/Loader";
 import { Navigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { loginStart, loginFailure,loginSuccess} from "./store/authSlice";
+import { Fragment } from "react";
 function App() {
-  const [user, setUser] = useState(null);
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [token,setToken] = useState(null);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+  const token = useSelector((state) => state.auth.token);
+  const loading = useSelector((state) => state.auth.loading);
+   const [authChecked, setAuthChecked] = useState(false);
+ 
 
   useEffect(() => {
-    const fetchedUser = JSON.parse(localStorage.getItem("user"));
-    if (fetchedUser) {
-      setUser(fetchedUser);
-      setLoggedIn(true);
-    }
-    setLoading(false)
+    if(!user || !token) {
+      dispatch(loginStart());
+      const fetchedUser = JSON.parse(localStorage.getItem("user"));
+      const fetchedToken = localStorage.getItem("token");
+      if (fetchedUser && fetchedToken) {
+        dispatch(loginSuccess({ user: fetchedUser, token: fetchedToken }));
+      } else {
+        dispatch(loginFailure("User not found or token missing"));
+      }
+      setAuthChecked(true);}
   }, []);
 
+  if (!authChecked) return <Loader visible={true} />;
+
+
   return (
-    <MyContext.Provider value={{ user, setUser, loggedIn, setLoggedIn, setLoading,token,setToken }}>
+    <Fragment>
       <Loader visible={loading} />
       <Router>
         <Routes>
           <Route
             path="/"
             element={
-              <PrivateRoute setLoading={setLoading} Component={Home} />
+              <PrivateRoute  Component={Home} />
             }
           />
           <Route exact path="/profile/:_id" element={<Profile />} />
@@ -42,7 +54,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
-    </MyContext.Provider>
+    </Fragment>
   );
 }
 

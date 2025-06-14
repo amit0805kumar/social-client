@@ -1,6 +1,7 @@
 import Share from "../components/Share";
+import {memo} from "react";
 
-export default function Feed(props) {
+function Feed(props) {
   return (
     <div className="feed">
       <div className="feedWrapper">
@@ -10,3 +11,4 @@ export default function Feed(props) {
   )
 }
 
+export default memo(Feed);

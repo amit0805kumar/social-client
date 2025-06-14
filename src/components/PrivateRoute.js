@@ -1,7 +1,7 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 export default function PrivateRoute(props) {
-  const { Component, setLoading, ...rest } = props;
+  const { Component, ...rest } = props;
   let data = localStorage.getItem("user");
   if (data) {
     data = JSON.parse(data);

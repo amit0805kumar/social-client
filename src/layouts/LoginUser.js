@@ -2,10 +2,9 @@ import { useState } from "react";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { callApi } from "../helpers/Helpers";
-import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { loginStart, loginFailure, loginSuccess } from "../store/authSlice";
+import { loginUser } from "../services/authService";
 export default function LoginUser() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -26,20 +25,16 @@ export default function LoginUser() {
   const handleLogin = async () => {
     try {
       if (username != "" && password != "") {
-        //movw this into service
-        const loggedUser = await callApi("POST", "auth/login", null, {
-          username: username,
-          password: password,
-        });
         dispatch(loginStart());
+        const loggedUser = await loginUser(username, password);
         dispatch(
           loginSuccess({
-            user: loggedUser.data.user,
-            token: loggedUser.data.token,
+            user: loggedUser.user,
+            token: loggedUser.token,
           })
         );
-        localStorage.setItem("user", JSON.stringify(loggedUser.data.user));
-        localStorage.setItem("token", JSON.stringify(loggedUser.data.token));
+        localStorage.setItem("user", JSON.stringify(loggedUser.user));
+        localStorage.setItem("token", JSON.stringify(loggedUser.token));
         navigate("/");
       } else {
         alert("Invalid fields");

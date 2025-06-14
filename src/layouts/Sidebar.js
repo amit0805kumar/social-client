@@ -11,21 +11,22 @@ import { callApi } from "../helpers/Helpers";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { fetchAllUsers } from "../services/userService";
 export default function Sidebar() {
   const [users, setUser] = useState([]);
   const user = useSelector((state) => state.auth.user);
   const token = useSelector((state) => state.auth.token);
-  const fetchAllUsers = async () => {
+  const fetchAllSidebarUsers = async () => {
     try {
-      let allUsers = await callApi("GET", "users/", token);
-      setUser(allUsers.data);
+      let allUsers = await fetchAllUsers(token);
+      setUser(allUsers);
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    fetchAllUsers();
+    fetchAllSidebarUsers();
   }, []);
 
   return (
@@ -70,10 +71,10 @@ export default function Sidebar() {
           <hr />
 
           <h5 className="suggetionHeading">Suggestions</h5>
-          {users.map((data) => {
+          {users && users.map((data) => {
             if (user._id !== data._id)
               return (
-                <Link to={`/profile/${data.username}`}>
+                <Link to={`/profile/${data._id}`}>
                   <li key={data.id}>
                     <Avatar
                       sx={{ width: 25, height: 25 }}

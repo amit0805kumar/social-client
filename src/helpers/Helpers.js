@@ -28,6 +28,20 @@ export const callApi = async (method, url, token, body) => {
           },
         });
         break;
+      case "PATCH":
+        response = await axios.patch(`${constants.API_BASE_URL}${url}`, body, {
+          headers: {
+            Authorization: `Bearer ${tk}`,
+          },
+        });
+        break;
+      case "DELETE":
+        response = await axios.delete(`${constants.API_BASE_URL}${url}`, {
+          headers: {
+            Authorization: `Bearer ${tk}`,
+          },
+        });
+        break;
       default:
         throw new Error(`Unsupported method: ${method}`);
     }

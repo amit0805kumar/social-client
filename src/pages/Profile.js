@@ -7,6 +7,9 @@ import ProfileHeader from "../layouts/ProfileHeader";
 import { useParams } from "react-router";
 import { callApi } from "../helpers/Helpers";
 import { useSelector } from "react-redux";
+import { fetchUserById } from "../services/userService";
+import { fetchUserPosts } from "../services/postService";
+import { set } from "date-fns";
 export default function Profile() {
   const [userPosts, setUserPosts] = useState([]);
   const [profileUser, setProfileUser] = useState({});
@@ -20,7 +23,7 @@ export default function Profile() {
 
   const fetchUserByUsername = async () => {
     try {
-      const res = await callApi("GET", `users/${userId}`, token);
+      const res = await fetchUserById(userId, token);
       setProfileUser(res);
     } catch (error) {
       console.log(error);
@@ -28,14 +31,17 @@ export default function Profile() {
   };
 
   useEffect(() => {
+    setProfileUser(user);
+  }, [user]);
+
+  useEffect(() => {
     fetchUserByUsername();
   }, [userId]);
 
   const fetchPosts = async () => {
     try {
-      const userposts = await callApi("GET", `posts/user/${profileUser._id}`, token);
-      console.log(userposts);
-      setUserPosts(userposts.data);
+      const userposts = await fetchUserPosts(profileUser._id, token);
+      setUserPosts(userposts);
     } catch (error) {
       console.log(error);
     }

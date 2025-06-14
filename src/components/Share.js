@@ -8,9 +8,9 @@ import Post from "./Post";
 import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { callApi } from "../helpers/Helpers";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
+import { createPostService } from "../services/postService";
 
 export default function Share(props) {
   const [open, setOpen] = React.useState(false);
@@ -50,13 +50,15 @@ export default function Share(props) {
       if (imgUrl == "" || !user._id) {
         alert("Invalid Media");
       } else {
-        await callApi("POST", "posts",token, {
+        await createPostService({
           userId: user._id,
           desc: postDesc,
           img: imgUrl,
-        });
+          username: user.username,
+          profilePicture: user.profilePicture,
+        }, token)
+        window.location.reload();
       }
-      window.location.reload();
     } catch (error) {
       console.log(error);
     }

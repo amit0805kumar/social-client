@@ -7,6 +7,7 @@ import { callApi } from "../helpers/Helpers";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { fetchPostsFailure, fetchPostsStart, fetchPostsSuccess } from "../store/postSlice";
+import { fetchTimelinePosts } from "../services/postService";
 export default function Home() {
   const dispatch = useDispatch();
   const posts = useSelector((state) => state.post.posts);
@@ -15,8 +16,8 @@ export default function Home() {
   const fetchPosts = async (userId) => {
     try {
        dispatch(fetchPostsStart());
-      const res = await callApi("GET", `posts/all/${userId}`,token);      
-      dispatch(fetchPostsSuccess(res.data))
+      const res = await fetchTimelinePosts(userId,token);      
+      dispatch(fetchPostsSuccess(res))
     } catch (error) {
       dispatch(fetchPostsFailure(error.message));
       console.error("Error fetching posts:", error);
