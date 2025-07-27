@@ -38,21 +38,41 @@ export default function Media() {
             )}
           </div>
         </Modal>
-        <div className="mediaContainer">
-          {posts && posts.length > 0 ? (
-            posts.map((post) => (
-              <Content
-                onClick={() => {
-                  setSelectedPost(post);
-                  setModalOpen(true);
-                }}
-                data={post}
-                key={post._id}
-              />
-            ))
-          ) : (
-            <p>No media posts available.</p>
-          )}
+        <div class="mediaWrapper">
+          <div class="scrollTrack">
+            <div className="mediaContainer">
+              {posts && posts.length > 0 ? (
+                posts.map((post) => (
+                  <Content
+                    onClick={() => {
+                      setSelectedPost(post);
+                      setModalOpen(true);
+                    }}
+                    data={post}
+                    key={post._id}
+                  />
+                ))
+              ) : (
+                <p>No media posts available.</p>
+              )}
+            </div>
+            <div className="mediaContainer">
+              {posts && posts.length > 0 ? (
+                posts.map((post) => (
+                  <Content
+                    onClick={() => {
+                      setSelectedPost(post);
+                      setModalOpen(true);
+                    }}
+                    data={post}
+                    key={post._id}
+                  />
+                ))
+              ) : (
+                <p>No media posts available.</p>
+              )}
+            </div>
+          </div>
         </div>
       </React.Fragment>
     )

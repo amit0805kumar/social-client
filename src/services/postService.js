@@ -104,3 +104,13 @@ export const fetchAllPosts = async (page=1, limit=10) => {
     throw new Error("Error fetching all posts: " + error.message);
   }
 }
+
+export const createMultiplePosts = async (data)=>{
+  try{
+    const response = await callApi("POST", "posts/multiple", null, data);
+    return response;
+  }catch(error){
+    console.error("Error creating multiple posts:", error);
+    throw new Error("Error creating multiple posts: " + error.message);
+  }
+}
