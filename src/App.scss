@@ -242,10 +242,15 @@ a {
             width: 100%;
             height: auto;
             overflow: hidden;
+            position: relative;
+
             img,
             video {
               border-radius: 4px;
               width: 100%;
+            }
+            .loaderWrapper{
+              transform: translateY(-20%);
             }
           }
           .footer {

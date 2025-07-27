@@ -29,6 +29,7 @@ import {
   deletePost,
   likeAndUnlikePost,
 } from "../store/postSlice";
+import Loader from "./Loader";
 
 export default function Post(props) {
   const { data } = props;
@@ -42,6 +43,8 @@ export default function Post(props) {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
   const user = useSelector((state) => state.auth.user);
+
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setDesc(data.desc || "");
@@ -121,6 +124,7 @@ export default function Post(props) {
   };
 
   const handleLikeUnlike = async () => {
+    setLoading(true);
     const isLiked = data.likes.includes(user._id);
     let res;
     if (isLiked) {
@@ -136,10 +140,12 @@ export default function Post(props) {
         })
       );
     }
+    setLoading(false);
   };
 
   return (
     <div className="postWrapper" key={data.id}>
+     
       <div className="header">
         <div className="col">
           <div className="profilepic_container">
@@ -255,6 +261,7 @@ export default function Post(props) {
         <p>{data.desc}</p>
       </div>
       <div className="media">
+         <Loader visible={loading} />
         {data.mediaType === "image" && data.img != "" ? (
           <img src={data.img} />
         ) : (
