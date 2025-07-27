@@ -621,6 +621,15 @@ a {
     align-self: flex-end;
   }
 }
+.modalEditProfile{
+  @media screen and (max-width: 700px) {
+    width: 100%;
+    height: auto;
+    top: 0;
+    left: 0;
+    transform: translate(0, 10%);
+  }
+}
 
 .loginWrapper {
   width: 100%;

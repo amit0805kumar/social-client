@@ -112,7 +112,7 @@ export default function EditProfile() {
         aria-describedby="modal-modal-description"
         closeAfterTransition
       >
-        <div className="main_modal">
+        <div className="main_modal modalEditProfile">
           <p className="heading">Update Profile</p>
 
           <div className="form">
