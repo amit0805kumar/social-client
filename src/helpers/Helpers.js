@@ -37,6 +37,7 @@ export const callApi = async (method, url, token, body) => {
         break;
       case "DELETE":
         response = await axios.delete(`${constants.API_BASE_URL}${url}`, {
+          data: body,
           headers: {
             Authorization: `Bearer ${tk}`,
           },

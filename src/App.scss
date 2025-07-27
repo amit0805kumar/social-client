@@ -189,7 +189,8 @@ a {
             width: 100%;
             height: auto;
             overflow: hidden;
-            img {
+            img,
+            video {
               border-radius: 4px;
               width: 100%;
             }
@@ -202,6 +203,7 @@ a {
             .actions {
               display: flex;
               align-items: center;
+              cursor: pointer;
               .likeBtn {
                 color: $primary_color;
                 cursor: pointer;
@@ -455,7 +457,7 @@ a {
         }
       }
 
-      p{
+      p {
         color: $grey-2;
         font-size: 12px;
       }
@@ -500,22 +502,21 @@ a {
       .urlInput {
         width: 80%;
       }
+      textarea {
+        width: 100%;
+        height: 80px;
+        padding: 8px;
+        border: none;
+        border-bottom: 1px solid $grey-2;
+        font-size: 16px;
+        color: $grey-1;
+        outline: none;
+      }
     }
     .dropdown {
       margin-bottom: 15px;
     }
   }
-
-  // input.urlInput {
-  //   border: none;
-  //   border-bottom: 1.5px solid #fff;
-  //   outline: none;
-  //   width: 100%;
-  //   padding: 6px 5px;
-  //   border-radius: 4px;
-  //   margin-bottom: 20px;
-  //   color: $grey-2;
-  // }
   button {
     margin-bottom: 20px;
     align-self: flex-end;
@@ -605,4 +606,64 @@ a {
 
 .profileFollow {
   margin-bottom: 20px;
+}
+
+.post-option-wrapper {
+  width: 500px;
+  height: auto;
+  border-radius: 10px;
+  background-color: #fff;
+  backdrop-filter: blur(5px);
+  margin-left: 50%;
+  transform: translateX(-50%);
+  margin-top: 30vh;
+  .post-option {
+    text-align: center;
+    padding: 15px 0;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    color: $grey-2;
+    border-bottom: 1px solid #cfcfcf;
+    &:last-child {
+      border: none;
+    }
+    &:hover {
+      background-color: #f1f1f1;
+    }
+  }
+}
+.mediaContainer {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  padding-top: 40px;
+  .content {
+    flex: 1;
+    cursor: pointer;
+    img,video{
+      height: 400px;
+      
+    }
+  }
+}
+.mediaModal{
+   display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    margin-left: 50%;
+    height: 100vh;
+    transform: translateX(-50%);
+    background-color: transparent;
+    &:focus {
+      outline: none;
+    }
+  .content{
+    height: 100%;
+    img,video{
+      height: 100%;
+      object-fit: cover;  
+    }
+  }
 }

@@ -19,7 +19,7 @@ export default function Sidebar() {
   const fetchAllSidebarUsers = async () => {
     try {
       let allUsers = await fetchAllUsers(token);
-      setUser(allUsers);
+      setUser(allUsers.filter((data) => !user.following.includes(data._id)));
     } catch (error) {
       console.log(error);
     }
@@ -41,10 +41,12 @@ export default function Sidebar() {
             <InsertCommentIcon fontSize="small" />
             <p>Chats</p>
           </li>
-          <li>
-            <YouTubeIcon fontSize="small" />
-            <p>Video</p>
-          </li>
+          <Link to="/media">
+            <li>
+              <YouTubeIcon fontSize="small" />
+              <p>Media</p>
+            </li>
+          </Link>
           <li>
             <BookmarkIcon fontSize="small" />
             <p>Bookmarks</p>
@@ -71,21 +73,22 @@ export default function Sidebar() {
           <hr />
 
           <h5 className="suggetionHeading">Suggestions</h5>
-          {users && users.map((data) => {
-            if (user._id !== data._id)
-              return (
-                <Link to={`/profile/${data._id}`}>
-                  <li key={data.id}>
-                    <Avatar
-                      sx={{ width: 25, height: 25 }}
-                      alt="people"
-                      src={data.profilePicture}
-                    />
-                    <p>{data.username}</p>
-                  </li>
-                </Link>
-              );
-          })}
+          {users &&
+            users.map((data) => {
+              if (user._id !== data._id)
+                return (
+                  <Link to={`/profile/${data._id}`}>
+                    <li key={data.id}>
+                      <Avatar
+                        sx={{ width: 25, height: 25 }}
+                        alt="people"
+                        src={data.profilePicture}
+                      />
+                      <p>{data.username}</p>
+                    </li>
+                  </Link>
+                );
+            })}
         </ul>
       </div>
     </div>

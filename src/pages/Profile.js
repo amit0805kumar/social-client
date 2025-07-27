@@ -5,84 +5,96 @@ import ProfileRightBar from "../layouts/ProfileRightBar";
 import Sidebar from "../layouts/Sidebar";
 import ProfileHeader from "../layouts/ProfileHeader";
 import { useParams } from "react-router";
-import { callApi } from "../helpers/Helpers";
 import { useSelector } from "react-redux";
-import { fetchUserById } from "../services/userService";
+import { startLoader, endLoader } from "../store/authSlice";
+import {
+  fetchFollowingUsersService,
+  fetchUserByIdService,
+} from "../services/userService";
 import { fetchUserPosts } from "../services/postService";
-import { set } from "date-fns";
+
 export default function Profile() {
-  const [userPosts, setUserPosts] = useState([]);
   const [profileUser, setProfileUser] = useState({});
-  const [followings, setFollowings] = useState([]);
-  const [currentUserProfile, setCurrentUserProfile] = useState(true);
   const [friended, setFriended] = useState(false);
+  const loading = useSelector((state) => state.auth.loading);
+
   const user = useSelector((state) => state.auth.user);
   const token = useSelector((state) => state.auth.token);
 
+  const [followings, setFollowings] = useState([]);
+  const [profilePosts, setProfilePosts] = useState([]);
+  const [isCurrentUser, setCurrentUserProfile] = useState(false);
+
   const userId = useParams()._id;
 
-  const fetchUserByUsername = async () => {
+  const fetchUserById = async () => {
     try {
-      const res = await fetchUserById(userId, token);
+      const res = await fetchUserByIdService(userId, token);
       setProfileUser(res);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
-  useEffect(() => {
-    setProfileUser(user);
-  }, [user]);
-
-  useEffect(() => {
-    fetchUserByUsername();
-  }, [userId]);
-
-  const fetchPosts = async () => {
-    try {
-      const userposts = await fetchUserPosts(profileUser._id, token);
-      setUserPosts(userposts);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const fetchFriends = async () => {
-    try {
-      let followings = [];
-      await Promise.all(
-        profileUser &&
-          profileUser.followings.map(async (userId) => {
-            let res = await callApi("GET", `users/${userId}`, token);
-            followings.push(res.data.user);
-          })
-      );
-      setFollowings(followings);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    if (profileUser && profileUser._id) {
+      //Check whether user is a friend or not
       if (user && user._id) {
-        if (user._id !== profileUser._id) {
+        if (user._id !== res._id) {
           setCurrentUserProfile(false);
         } else {
           setCurrentUserProfile(true);
         }
-        if (user?.followings?.includes(profileUser._id)) {
+        if (user?.following?.includes(res._id)) {
           setFriended(true);
         } else {
           setFriended(false);
         }
       }
-      fetchPosts();
-      // fetchFriends();
+      return res;
+    } catch (error) {
+      console.log(error);
     }
-  }, [profileUser, user]);
+  };
 
-  return profileUser ? (
+  const fetchUserData = async (userId) => {
+    startLoader();
+    const res = await fetchUserById(userId);
+    await fetchPosts(res);
+    await fetchFriends(res);
+    endLoader();
+  };
+
+  useEffect(() => {
+    fetchUserData(userId);
+  }, [userId, user]);
+
+  const fetchPosts = async (profileUser) => {
+    try {
+      if (!profileUser || !profileUser._id) {
+        throw new Error("Profile user not found");
+      }
+      const userposts = await fetchUserPosts(profileUser._id, token);
+      if (!userposts || userposts.length === 0) {
+        throw new Error("No posts found for this user");
+      }
+      setProfilePosts(userposts);
+    } catch (error) {
+      console.log(error);
+      setProfilePosts([]);
+    }
+  };
+
+  const fetchFriends = async (profileUser) => {
+    try {
+      if (profileUser && profileUser.following) {
+        const followings = await fetchFollowingUsersService(
+          profileUser.following,
+          token
+        );
+        setFollowings(followings);
+      }
+    } catch (error) {
+      console.log(error);
+      setFollowings([]);
+    }
+  };
+
+  return profileUser && !loading ? (
     <React.Fragment>
       <Topbar />
       <div className="profileContainer">
@@ -90,18 +102,17 @@ export default function Profile() {
         <div className="profile_right">
           <ProfileHeader user={profileUser} />
           <div className="share">
-            {userPosts && userPosts.length > 0 && (
-              <Feed shareTopVisible={currentUserProfile} posts={userPosts} />
+            {profilePosts && profilePosts.length > 0 && (
+              <Feed shareTopVisible={false} posts={profilePosts} />
             )}
-            {followings && (
-              <ProfileRightBar
-                followings={followings}
-                currentUserProfile={currentUserProfile}
-                isAFriend={friended}
-                setFriended={setFriended}
-                profileUser={profileUser}
-              />
-            )}
+
+            <ProfileRightBar
+              followings={followings}
+              currentUserProfile={isCurrentUser}
+              isAFriend={friended}
+              setFriended={setFriended}
+              profileUser={profileUser}
+            />
           </div>
         </div>
       </div>

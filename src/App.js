@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { loginStart, loginFailure,loginSuccess} from "./store/authSlice";
 import { Fragment } from "react";
+import Media from "./pages/Media";
 function App() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
@@ -46,6 +47,10 @@ function App() {
             element={
               <PrivateRoute  Component={Home} />
             }
+          />
+          <Route
+          path="/media"
+          element={<PrivateRoute Component={Media} />}
           />
           <Route exact path="/profile/:_id" element={<Profile />} />
           <Route exact path="/login" element={<Login />} />

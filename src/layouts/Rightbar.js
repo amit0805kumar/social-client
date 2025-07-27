@@ -1,8 +1,11 @@
-import React from "react";
 import { Avatar } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Badge from "@mui/material/Badge";
-import { Users } from "../utils/dummyData";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchFollowingsFailure, fetchFollowingsStart, fetchFollowingsSuccess } from "../store/userSlice";
+import { fetchFollowingUsersService } from "../services/userService";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -12,6 +15,33 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 export default function Rightbar() {
+
+  const dispatch = useDispatch();
+  const friends = useSelector((state) => state.user?.followings) || [];
+  const user = useSelector((state) => state.auth.user);
+  const token = useSelector((state) => state.auth.token);
+
+  const fetchFriends = async () => {
+      try {
+        if (user && user.following) {
+          dispatch(fetchFollowingsStart());
+          const followings = await fetchFollowingUsersService(
+            user.following,
+            token
+          );
+          dispatch(fetchFollowingsSuccess(followings));
+        }
+      } catch (error) {
+        console.log(error);
+        dispatch(fetchFollowingsFailure(error.message));
+      }
+    };
+
+    useEffect(() => {
+      fetchFriends();
+    }, [user]);
+
+
   return (
     <div className="rightbar">
       <div className="birthdayWrapper">
@@ -28,9 +58,10 @@ export default function Rightbar() {
       </div>
       <div className="friendsWrapper">
         <h3>Friends online</h3>
-        {Users.map((user) => {
+        {friends && friends.map((user) => {
           return (
-            <div className="list" key={user.id}>
+            <Link key={user.id} to={`/profile/${user._id}`} style={{ textDecoration: "none" }}>
+            <div className="list" >
               <StyledBadge
                 overlap="circular"
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
@@ -40,6 +71,7 @@ export default function Rightbar() {
               </StyledBadge>
               <p>{user.username}</p>
             </div>
+            </Link>
           );
         })}
       </div>

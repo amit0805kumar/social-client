@@ -1,4 +1,12 @@
-import { Avatar } from "@mui/material";
+import {
+  Avatar,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
+  TextField,
+} from "@mui/material";
 import React, { useState, useEffect } from "react";
 import PermMediaIcon from "@mui/icons-material/PermMedia";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
@@ -13,16 +21,19 @@ import { Navigate } from "react-router-dom";
 import { createPostService } from "../services/postService";
 
 export default function Share(props) {
+  const { posts, shareTopVisible } = props;
+
   const [open, setOpen] = React.useState(false);
   const user = useSelector((state) => state.auth.user);
   const token = useSelector((state) => state.auth.token);
 
   const [postDesc, setDesc] = useState("");
   const [imgUrl, setUrl] = useState("");
+  const [mediaType, setMediaType] = useState("image");
 
   useEffect(() => {
     // Reset fields on component mount
-    if(!user) {
+    if (!user) {
       Navigate("/login");
     }
   }, []);
@@ -42,6 +53,9 @@ export default function Share(props) {
       case "imgUrl":
         setUrl(e.target.value);
         break;
+      case "mediaType":
+        setMediaType(e.target.value);
+        break;
     }
   };
 
@@ -50,13 +64,17 @@ export default function Share(props) {
       if (imgUrl == "" || !user._id) {
         alert("Invalid Media");
       } else {
-        await createPostService({
-          userId: user._id,
-          desc: postDesc,
-          img: imgUrl,
-          username: user.username,
-          profilePicture: user.profilePicture,
-        }, token)
+        await createPostService(
+          {
+            userId: user._id,
+            desc: postDesc,
+            img: imgUrl,
+            username: user.username,
+            profilePicture: user.profilePicture,
+            mediaType: mediaType,
+          },
+          token
+        );
         window.location.reload();
       }
     } catch (error) {
@@ -64,7 +82,6 @@ export default function Share(props) {
     }
   };
 
-  const { posts, shareTopVisible } = props;
   return (
     <div className="share">
       <div className="shareWrapper">
@@ -83,7 +100,11 @@ export default function Share(props) {
                 placeholder="What's in you mind?"
               />
             </div>
-            <img className="postImage" src={imgUrl} />
+            {mediaType === "image" ? (
+              <img className="postImage" src={imgUrl} />
+            ) : (
+              <video className="postImage" src={imgUrl} autoPlay loop></video>
+            )}
             <hr />
             <div className="shareTop_actions">
               <ul className="actions">
@@ -99,20 +120,53 @@ export default function Share(props) {
                   closeAfterTransition
                 >
                   <div className="main_modal">
-                    <p className="heading">Enter the img/gif URL below</p>
-                    <input className="urlInput"
-                      name="imgUrl"
-                      value={imgUrl}
-                      onChange={(e) => handleChange(e)}
-                      placeholder="Paste the url here"
-                    />
-                    <Button
-                      variant="contained"
-                      endIcon={<CloudUploadIcon />}
-                      onClick={handleClose}
-                    >
-                      Upload
-                    </Button>
+                    <p className="heading">Enter the media URL here</p>
+                    <div className="form">
+                      <div className="row">
+                        <TextField
+                          className="input"
+                          name="imgUrl"
+                          value={imgUrl}
+                          variant="standard"
+                          id="standard-basic"
+                          placeholder="https://example.com/image.jpg"
+                          fullWidth
+                          style={{ width: "100%" }}
+                          onChange={(e) => handleChange(e)}
+                          label="Paste the url here"
+                        />
+                      </div>
+                      <div className="row">
+                        <FormControl>
+                          <FormLabel id="radio-btn-label">Media Type</FormLabel>
+                          <RadioGroup
+                            aria-labelledby="radio-btn-label"
+                            name="mediaType"
+                            defaultValue="image"
+                            onChange={handleChange}
+                          >
+                            <FormControlLabel
+                              value="image"
+                              control={<Radio />}
+                              label="Image"
+                            />
+                            <FormControlLabel
+                              value="video"
+                              control={<Radio />}
+                              label="Video"
+                            />
+                          </RadioGroup>
+                        </FormControl>
+                      </div>
+
+                      <Button
+                        variant="contained"
+                        endIcon={<CloudUploadIcon />}
+                        onClick={handleClose}
+                      >
+                        Upload
+                      </Button>
+                    </div>
                   </div>
                 </Modal>
                 <li>
@@ -135,8 +189,7 @@ export default function Share(props) {
           </div>
         ) : null}
         <div className="shareBottom ">
-          {posts &&
-            posts.map((post) => <Post data={post} key={post._id} />)}
+          {posts && posts.map((post) => <Post data={post} key={post._id} />)}
         </div>
       </div>
     </div>

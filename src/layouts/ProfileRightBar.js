@@ -1,15 +1,15 @@
 import React from "react";
 import Friends from "../components/Friends";
-import { MyContext } from "../MyContext";
 import Button from "@mui/material/Button";
 import GroupIcon from "@mui/icons-material/Group";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import { Link } from "react-router-dom";
 import { callApi } from "../helpers/Helpers";
 import EditProfile from "./EditProfile";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { updateUser } from "../store/authSlice";
 export default function ProfileRightBar(props) {
-  // const user = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state.auth.user);
   const token = useSelector((state) => state.auth.token);
   const {
     profileUser,
@@ -18,30 +18,31 @@ export default function ProfileRightBar(props) {
     isAFriend,
     setFriended,
   } = props;
+  
+  const dispatch = useDispatch();
+  
 
   const handleFriends = async (friends) => {
     if (friends) {
-      let res = await callApi("PUT", `users/${profileUser._id}/follow`, token, {
-        userId: profileUser._id,
+      let res = await callApi("PATCH", `users/follow/${user._id}`, token, {
+        followUserId: profileUser._id,
       });
-      let updatedUser = profileUser;
-      updatedUser.followings.push(profileUser._id);
+      if(res.success) {
+        dispatch(updateUser({user: res.data}))
+      }
       setFriended(friends);
     } else {
       let res = await callApi(
-        "PUT",
-        `users/${profileUser._id}/unfollow`,
+        "PATCH",
+        `users/unfollow/${user._id}`,
         token,
         {
-          userId: profileUser._id,
+          followUserId: profileUser._id,
         }
       );
-      let updatedUser = profileUser;
-      updatedUser.followings = profileUser.followings.filter(
-        (id) => id != profileUser._id
-      );
-      // setUser(updatedUser);
-      console.log(res);
+      if(res.success) {
+        dispatch(updateUser({user: res.data}))
+      }
       setFriended(friends);
     }
   };
@@ -98,7 +99,7 @@ export default function ProfileRightBar(props) {
           {followings && followings.length  ?
             followings.map((user) => {
               return (
-                <Link to={`/profile/${user.username}`}>
+                <Link to={`/profile/${user._id}`} key={user._id}>
                   <Friends key={user._id} data={user} />
                 </Link>
               );
