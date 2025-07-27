@@ -565,6 +565,14 @@ a {
   border: none;
   outline: none;
   overflow: hidden;
+  @media screen and (max-width: 700px) {
+    width: 100%;
+    height: auto;
+    top: 0;
+    left: 0;
+    transform: translate(0, 50%);
+    
+  }
   .heading {
     color: #fff;
     margin-bottom: 20px;
