@@ -6,6 +6,9 @@ export const loginUser = async (username, password) => {
       username: username,
       password: password,
     });
+    if(loggedUser.success === false) {
+      throw new Error(loggedUser.message || "Login failed");
+    }
     return loggedUser.data;
   } catch (error) {
     console.error("Error logging in:", error);

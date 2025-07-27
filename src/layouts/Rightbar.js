@@ -14,6 +14,15 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
     boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
   },
 }));
+const ResponsiveAvatar = styled(Avatar)`
+  width: 40px;
+  height: 40px;
+
+  @media (max-width: 700px) {
+    width: 28px;
+    height: 28px;
+  }
+`;
 export default function Rightbar() {
 
   const dispatch = useDispatch();
@@ -67,7 +76,7 @@ export default function Rightbar() {
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 variant="dot"
               >
-                <Avatar alt={user.username} src={user.profilePicture} />
+                <ResponsiveAvatar alt={user.username} src={user.profilePicture} />
               </StyledBadge>
               <p>{user.username}</p>
             </div>

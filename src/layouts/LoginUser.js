@@ -1,15 +1,18 @@
-import { useState } from "react";
+import * as React from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginStart, loginFailure, loginSuccess } from "../store/authSlice";
 import { loginUser } from "../services/authService";
+
 export default function LoginUser() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { error } = useSelector((state) => state.auth);
 
   const handleChange = (e) => {
     switch (e.target.name) {
@@ -21,6 +24,7 @@ export default function LoginUser() {
         break;
     }
   };
+
 
   const handleLogin = async () => {
     try {
@@ -40,10 +44,15 @@ export default function LoginUser() {
         alert("Invalid fields");
       }
     } catch (error) {
-      dispatch(loginFailure());
+      dispatch(
+        loginFailure({
+          error: "Login failed",
+        })
+      );
       console.error("Login failed:", error);
     }
   };
+
 
   return (
     <div className="formWrapper">
@@ -62,6 +71,7 @@ export default function LoginUser() {
         onChange={(e) => handleChange(e)}
         value={password}
       />
+      {error && <p className="errorMessage">*{error}</p>}
       <Button
         variant="contained"
         size="large"
