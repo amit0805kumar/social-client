@@ -753,52 +753,61 @@ a {
   }
 }
 .mediaWrapper {
-  height: 100vh; // visible height
-  overflow: hidden;
+  height: 100vh;
+  overflow-y: auto; /* Enable vertical scroll */
+  scroll-behavior: smooth;
   position: relative;
+  .inputForm{
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1000;
+    background-color: pink;
+  }
 }
 
 .scrollTrack {
   display: flex;
   flex-direction: column;
-  animation: scroll-vertical 150s linear infinite;
-  .content:hover ~ &,
-  &:hover {
-    animation-play-state: paused;
-  }
 }
+
 .mediaContainer {
   display: flex;
   width: 100%;
   flex-wrap: wrap;
   justify-content: space-between;
   padding-top: 40px;
-  .content {
-    width: auto;
-    height: 400px;
-    overflow: hidden;
-    cursor: pointer;
-    margin-bottom: 5px;
-    border-radius: 10px;
-    transition: all 0.3s ease;
-    &:hover {
-      transform: scale(2);
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-    }
-    img,
-    video {
-      height: 400px;
-      object-fit: cover;
-    }
+}
+
+.mediaContainer .content {
+  width: auto;
+  height: 400px;
+  overflow: hidden;
+  cursor: pointer;
+  margin-bottom: 5px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  @media screen and (max-width: 700px) {
+    width: 100%;
+    height: auto;
+    margin-bottom: 0;
+    border-radius: 0;
   }
 }
-@keyframes scroll-vertical {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(-50%);
-  }
+
+.mediaContainer .content:hover {
+  transform: scale(1.02);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+
+.mediaContainer .content img,
+.mediaContainer .content video {
+  height: 400px;
+  object-fit: cover;
+  @media screen and (max-width: 700px) {
+        width: 100%;
+        height: auto;
+      }
 }
 .mediaModal {
   display: flex;
@@ -818,6 +827,10 @@ a {
     video {
       height: 100%;
       object-fit: cover;
+      @media screen and (max-width: 700px) {
+        width: 100%;
+        height: auto;
+      }
     }
   }
 }
