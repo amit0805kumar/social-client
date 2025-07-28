@@ -35,9 +35,9 @@ export default function Topbar() {
         <div className="link">Timeline</div>
       </div>
       <div className="topbar_icons">
-        <div className="icon">
+        <Link to="/media" className="icon">
           <PersonIcon />
-        </div>
+        </Link>
         <div className="icon">
           <NotificationsIcon />
         </div>
