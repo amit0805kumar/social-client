@@ -10,17 +10,29 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { logout } from "../store/authSlice";
+import { useEffect, useState } from "react";
 
 export default function Topbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
+  const [isAdmin, setIsAdmin] = useState(false);
+
   const handleLogout = () => {
     dispatch(logout());
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     navigate("/login");
   };
+
+  useEffect(() => {
+    if (user && user.isAdmin) {
+      setIsAdmin(true);
+    } else {
+      setIsAdmin(false);
+    }
+  }, [user]);
+
   return user ? (
     <div className="topbar_container">
       <Link to="/">
@@ -35,9 +47,11 @@ export default function Topbar() {
         <div className="link">Timeline</div>
       </div>
       <div className="topbar_icons">
-        <Link to="/media" className="icon">
-          <PersonIcon />
-        </Link>
+        {isAdmin && (
+          <Link to="/media" className="icon">
+            <PersonIcon />
+          </Link>
+        )}
         <div className="icon">
           <NotificationsIcon />
         </div>

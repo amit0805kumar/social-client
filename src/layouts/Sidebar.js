@@ -15,6 +15,8 @@ import { fetchAllUsers } from "../services/userService";
 export default function Sidebar() {
   const [users, setUser] = useState([]);
   const user = useSelector((state) => state.auth.user);
+  const [isAdmin, setIsAdmin] = useState(false)
+
   const token = useSelector((state) => state.auth.token);
   const fetchAllSidebarUsers = async () => {
     try {
@@ -28,6 +30,13 @@ export default function Sidebar() {
   useEffect(() => {
     fetchAllSidebarUsers();
   }, []);
+  useEffect(()=>{
+    if (user && user.isAdmin) {
+      setIsAdmin(true);
+    } else {
+      setIsAdmin(false);
+    }
+  },[user]);
 
   return (
     <div className="sidebar">
@@ -41,12 +50,14 @@ export default function Sidebar() {
             <InsertCommentIcon fontSize="small" />
             <p>Chats</p>
           </li>
-          <Link to="/media">
-            <li>
-              <YouTubeIcon fontSize="small" />
-              <p>Media</p>
-            </li>
-          </Link>
+          {isAdmin && (
+            <Link to="/media">
+              <li>
+                <YouTubeIcon fontSize="small" />
+                <p>Media</p>
+              </li>
+            </Link>
+          )}
           <li>
             <BookmarkIcon fontSize="small" />
             <p>Bookmarks</p>

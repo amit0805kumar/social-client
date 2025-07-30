@@ -4,12 +4,15 @@ import { useSelector } from "react-redux";
 import { fetchAllPosts } from "../services/postService";
 import { Content } from "../components/Content";
 import { Modal } from "@mui/material";
+import Loader from "../components/Loader";
 
 export default function Media() {
   const loading = useSelector((state) => state.auth.loading);
   const [posts, setPosts] = useState([]);
   const [selectedPost, setSelectedPost] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const user = useSelector((state) => state.auth.user);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -21,8 +24,17 @@ export default function Media() {
     fetchPosts();
   }, []);
 
+
+  useEffect(() => {
+    if (user && user.isAdmin) {
+      setIsAdmin(true);
+    } else {
+      setIsAdmin(false);
+    }
+  }, [user]);
+
   return (
-    !loading && (
+    !loading  && (
       <React.Fragment>
         <Topbar />
         <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
@@ -30,12 +42,13 @@ export default function Media() {
             {selectedPost ? (
               <Content onClick={()=>setModalOpen(false)} data={selectedPost} />
             ) : (
-              <div>Loading...</div>
+              <Loader visible={true} />
             )}
           </div>
         </Modal>
-        <div class="mediaWrapper">
-          <div class="scrollTrack">
+        
+        { isAdmin ? <div className="mediaWrapper">
+          <div className="scrollTrack">
             <div className="mediaContainer">
               {posts && posts.length > 0 ? (
                 posts.map((post) => (
@@ -49,12 +62,12 @@ export default function Media() {
                   />
                 ))
               ) : (
-                <p>No media posts available.</p>
+               <Loader visible={true} />
               )}
             </div>
           </div>
-        </div>
+        </div> : <h1 className="mediaError">Media not available</h1>}
       </React.Fragment>
     )
-  );
+  )
 }

@@ -29,7 +29,7 @@ export default function Rightbar() {
   const friends = useSelector((state) => state.user?.followings) || [];
   const user = useSelector((state) => state.auth.user);
   const token = useSelector((state) => state.auth.token);
-
+console.log("friends", friends);
   const fetchFriends = async () => {
       try {
         if (user && user.following) {
@@ -38,6 +38,7 @@ export default function Rightbar() {
             user.following,
             token
           );
+          
           dispatch(fetchFollowingsSuccess(followings));
         }
       } catch (error) {
@@ -62,7 +63,7 @@ export default function Rightbar() {
       <div className="adWrapper">
         <img
           alt="ad"
-          src="https://i.pinimg.com/originals/31/28/5d/31285de4c567d02b72f4c962645e7abb.gif"
+         src="https://media.tenor.com/oylzydvTDV4AAAAM/kusuriya-no-hitorigoto-maomao.gif"
         />
       </div>
       <div className="friendsWrapper">
