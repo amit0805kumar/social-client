@@ -55,3 +55,13 @@ export const callApi = async (method, url, token, body) => {
     return error?.response?.data || { success: false, message: 'Unknown error' };
   }
 };
+
+
+export function shuffleArray(array) {
+  const shuffled = [...array]; // clone the array to avoid mutating original
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}

@@ -811,15 +811,15 @@ body{
   display: flex;
   width: 100%;
   flex-wrap: wrap;
-  justify-content: space-between;
   padding-top: 40px;
+  justify-content: center;
 }
 
 .mediaContainer .content {
-  width: auto;
   height: 400px;
   overflow: hidden;
   cursor: pointer;
+  margin-right: 8px;
   margin-bottom: 5px;
   border-radius: 10px;
   transition: all 0.3s ease;
@@ -838,7 +838,7 @@ body{
 
 .mediaContainer .content img,
 .mediaContainer .content video {
-  height: 400px;
+  height: 100%;
   object-fit: cover;
   @media screen and (max-width: 700px) {
     width: 100%;

@@ -5,6 +5,7 @@ import { fetchAllPosts } from "../services/postService";
 import { Content } from "../components/Content";
 import { Modal } from "@mui/material";
 import Loader from "../components/Loader";
+import { shuffleArray } from "../helpers/Helpers";
 
 export default function Media() {
   const loading = useSelector((state) => state.auth.loading);
@@ -18,7 +19,7 @@ export default function Media() {
     const fetchPosts = async () => {
       const res = await fetchAllPosts(1, -1);
       if (res) {
-        setPosts(res.posts);
+        setPosts(shuffleArray(res.posts));
       }
     };
     fetchPosts();
