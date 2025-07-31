@@ -78,3 +78,18 @@ export const unfollowUserService = async (userId, followUserId, token) => {
     throw error;
   }
 }
+
+export const changePasswordService = async (userId,oldPassword, newPassword, token) => {
+  try {
+    const response = await callApi(
+      "PATCH",
+      `users/change-password/${userId}`,
+      token,
+      { oldPassword, newPassword }
+    );
+    return response;
+  } catch (error) {
+    console.error("Error changing password:", error);
+    throw error;
+  }
+}

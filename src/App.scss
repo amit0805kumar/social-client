@@ -691,6 +691,13 @@ a {
   button {
     margin-top: 20px;
   }
+  .forgetPwd{
+    color: $primary_color;
+    text-decoration: underline;
+    font-size: 12px;
+    margin-top: 12px;
+    cursor: pointer;
+  }
 }
 
 .loaderWrapper {

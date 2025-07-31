@@ -8,6 +8,8 @@ import { callApi } from "../helpers/Helpers";
 import EditProfile from "./EditProfile";
 import { useSelector, useDispatch } from "react-redux";
 import { updateUser } from "../store/authSlice";
+import ChangePassword from "../pages/ChangePassword";
+import ChangePasswordForm from "./ChangePasswordForm";
 export default function ProfileRightBar(props) {
   const user = useSelector((state) => state.auth.user);
   const token = useSelector((state) => state.auth.token);
@@ -84,9 +86,9 @@ export default function ProfileRightBar(props) {
           <div className="row">
             <h4>Relationship</h4>{" "}
             <p>
-              {profileUser.relationshipStatus == 1
+              {profileUser.relationshipStatus === 1
                 ? "Single"
-                : profileUser.relationshipStatus == 2
+                : profileUser.relationshipStatus === 2
                 ? "Married"
                 : "-"}
             </p>
@@ -107,6 +109,7 @@ export default function ProfileRightBar(props) {
         </div>
       </div>
       {currentUserProfile ? <EditProfile /> : null}
+      {currentUserProfile ? <ChangePasswordForm /> : null}
     </div>
   );
 }

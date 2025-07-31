@@ -1,5 +1,4 @@
 import {createSlice} from '@reduxjs/toolkit';
-import { add, set } from 'date-fns';
 const initialState = {
   posts: [],
   profilePosts: [],

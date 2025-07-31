@@ -7,7 +7,6 @@ import WorkIcon from "@mui/icons-material/Work";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import { Avatar } from "@mui/material";
-import { callApi } from "../helpers/Helpers";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";

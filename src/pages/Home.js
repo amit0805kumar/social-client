@@ -3,7 +3,6 @@ import Topbar from "../layouts/Topbar";
 import Sidebar from "../layouts/Sidebar";
 import Feed from "../layouts/Feed";
 import Rightbar from "../layouts/Rightbar";
-import { callApi } from "../helpers/Helpers";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { fetchPostsFailure, fetchPostsStart, fetchPostsSuccess } from "../store/postSlice";

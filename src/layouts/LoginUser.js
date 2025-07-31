@@ -80,6 +80,9 @@ export default function LoginUser() {
       >
         Login
       </Button>
+      <Link className="forgetPwd" to="/forgot-password">
+      <p>Forgot your password?</p>
+      </Link>
       <Link to="/register">
         <Button variant="contained" size="large">
           Register

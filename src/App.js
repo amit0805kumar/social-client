@@ -14,6 +14,7 @@ import { loginStart, loginFailure,loginSuccess} from "./store/authSlice";
 import { Fragment } from "react";
 import Media from "./pages/Media";
 import { Multiple } from "./pages/Multiple";
+import ChangePassword from "./pages/ChangePassword";
 function App() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
@@ -62,6 +63,7 @@ function App() {
           <Route exact path="/profile/:_id" element={<Profile />} />
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/register" element={<Register />} />
+          <Route exact path="/forgot-password" element={<ChangePassword />} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
