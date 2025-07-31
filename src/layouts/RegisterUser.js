@@ -96,13 +96,13 @@ export default function RegisterUser() {
         value={rePassword}
          onChange={handleChange}
       />
-      <Button onClick={handleRegister} variant="contained" size="large">
+      <div onClick={handleRegister} className="button loginButton">
         Register
-      </Button>
+      </div>
       <Link to="/login">
-        <Button variant="contained" size="large" color="success">
+        <div className="button-2 registerButton">
           Login
-        </Button>
+        </div>
       </Link>
     </div>
   );

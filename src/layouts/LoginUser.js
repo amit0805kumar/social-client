@@ -72,21 +72,19 @@ export default function LoginUser() {
         value={password}
       />
       {error && <p className="errorMessage">*{error}</p>}
-      <Button
-        variant="contained"
-        size="large"
-        color="success"
+      <div
+        className="button loginButton"
         onClick={handleLogin}
       >
         Login
-      </Button>
+      </div>
       <Link className="forgetPwd" to="/forgot-password">
       <p>Forgot your password?</p>
       </Link>
       <Link to="/register">
-        <Button variant="contained" size="large">
+        <div className="button-2 registerButton">
           Register
-        </Button>
+        </div>
       </Link>
     </div>
   );

@@ -12,10 +12,13 @@ a {
   text-decoration: none;
   color: inherit;
 }
+body{
+  background-color: #000;
+}
 .topbar {
   &_container {
     width: 100%;
-    background-color: $primary_color;
+    background: linear-gradient(135deg, #9f1f6e 0%, #ef6a35 100%);
     height: 50px;
     display: flex;
     align-items: center;
@@ -85,6 +88,7 @@ a {
   margin-top: 50px;
   padding: 0;
   overflow: hidden;
+  background-color: #000000;
   @media screen and (max-width: 700px) {
     .sidebar {
       transform: translateX(-100%);
@@ -101,7 +105,6 @@ a {
   overflow-y: scroll;
   @media screen and (max-width: 700px) {
     order: 2;
-    
   }
   &::-webkit-scrollbar {
     display: none;
@@ -114,6 +117,7 @@ a {
         padding: 10px 20px;
         overflow: hidden;
         margin-bottom: 40px;
+        background-color: #fff;
         &_input {
           display: flex;
           margin: 20px 0;
@@ -189,6 +193,7 @@ a {
           padding: 10px 20px;
           margin-bottom: 35px;
           overflow: hidden;
+          background-color: #000000;
           @media screen and (max-width: 700px) {
             padding: 8px 10px;
           }
@@ -196,6 +201,7 @@ a {
             display: flex;
             justify-content: space-between;
             padding: 5px 10px;
+            color: #fff;
             @media screen and (max-width: 700px) {
               padding: 3px 5px;
             }
@@ -210,14 +216,14 @@ a {
                 margin-left: 12px;
                 font-size: 18px;
                 font-weight: 500;
-                color: $grey-1;
+                color:  #fff;
                 @media screen and (max-width: 700px) {
                   margin-left: 8px;
                 }
               }
               .time {
                 margin-left: 10px;
-                color: $grey-2;
+                color: #fff;
                 font-size: 12px;
                 align-self: top;
                 @media screen and (max-width: 700px) {
@@ -228,7 +234,7 @@ a {
           }
           .postText {
             margin: 14px 0;
-            color: $grey-1;
+            color: #fff;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -249,7 +255,7 @@ a {
               border-radius: 4px;
               width: 100%;
             }
-            .loaderWrapper{
+            .loaderWrapper {
               transform: translateY(-20%);
             }
           }
@@ -269,14 +275,14 @@ a {
               .likes {
                 margin-left: 10px;
                 font-size: 12px;
-                color: $grey-2;
+                color: #fff;
               }
             }
             .comments {
               cursor: pointer;
               text-decoration: underline;
               font-size: 12px;
-              color: $grey-2;
+              color: #fff;
             }
           }
         }
@@ -287,7 +293,7 @@ a {
 .sidebar {
   flex: 2;
   height: calc(100vh - 50px);
-  background-color: #fff;
+  background-color: #000;
   overflow-y: scroll;
   position: inherit;
   .sidebarWrapper {
@@ -306,6 +312,10 @@ a {
         cursor: pointer;
         p {
           margin-left: 10px;
+          color: #fff;
+        }
+        svg{
+          color: #fff;
         }
       }
       .showmore {
@@ -313,11 +323,18 @@ a {
         border: none;
         cursor: pointer;
         padding: 10px 35px;
-        color: $grey-2;
+        color: #fff;
+        background-color: transparent;
+        transition: all 0.3s ease;
+        border: 1px solid #fff;
+        &:hover {
+          background-color: #fff;
+          color: #000;
+        }
       }
     }
     .suggetionHeading {
-      color: $grey-2;
+      color: #fff;
       margin-bottom: 20px;
     }
   }
@@ -326,10 +343,10 @@ a {
     width: 5px;
   }
   &::-webkit-scrollbar-track {
-    background-color: #f1f1f1;
+    background-color: #000000;
   }
   &::-webkit-scrollbar-thumb {
-    background-color: rgb(201, 201, 201);
+    background: linear-gradient(135deg, #9f1f6e 0%, #ef6a35 100%);
   }
 }
 
@@ -343,11 +360,12 @@ a {
     display: none;
   }
   @media screen and (max-width: 700px) {
-   display: none;
+    display: none;
   }
   .birthdayWrapper {
     display: flex;
     align-items: center;
+    color: #fff;
     img {
       margin-right: 10px;
       height: 50px;
@@ -376,6 +394,7 @@ a {
   .friendsWrapper {
     h3 {
       margin-bottom: 15px;
+      color: #fff;
       @media screen and (max-width: 700px) {
         font-size: 12px;
       }
@@ -386,6 +405,7 @@ a {
       align-items: center;
       p {
         margin-left: 15px;
+        color: #fff;
         @media screen and (max-width: 700px) {
           font-size: 10px;
           margin-left: 10px;
@@ -412,7 +432,7 @@ a {
     position: fixed;
     width: 250px;
   }
-   @media screen and (max-width: 700px) {
+  @media screen and (max-width: 700px) {
     margin-top: 0px;
     .sidebar {
       transform: translateX(-100%);
@@ -425,9 +445,9 @@ a {
     width: 100%;
     justify-content: end;
     height: calc(100vh - 50px);
-     @media screen and (max-width: 700px) {
-       margin-left: 0;
-     }
+    @media screen and (max-width: 700px) {
+      margin-left: 0;
+    }
     .rightbar,
     .feed {
       overflow: visible;
@@ -490,18 +510,18 @@ a {
     order: 1;
   }
   .basic {
-    background-color: rgb(246, 246, 246);
+    background-color: #000;
     padding: 20px;
     border-radius: 4px;
     width: 100%;
     h3 {
-      color: $grey-1;
+      color: #fff;
       margin-bottom: 20px;
     }
     .row {
       display: flex;
       align-items: baseline;
-      color: $grey-2;
+      color: #fff;
       margin-bottom: 15px;
       h4 {
         width: 100px;
@@ -514,11 +534,11 @@ a {
   .friends {
     width: 100%;
     margin-top: 40px;
-    background-color: rgb(246, 246, 246);
+    background-color: #000;
     padding: 20px;
     border-radius: 4px;
     h3 {
-      color: $grey-1;
+      color: #fff;
       margin-bottom: 5px;
     }
     .friends_list {
@@ -543,13 +563,13 @@ a {
         .name {
           margin-top: 8px;
           font-size: 12px;
-          color: $grey-2;
+          color:#fff;
           text-align: center;
         }
       }
 
       p {
-        color: $grey-2;
+        color: #fff;
         font-size: 12px;
       }
     }
@@ -576,7 +596,6 @@ a {
     top: 0;
     left: 0;
     transform: translate(0, 50%);
-    
   }
   .heading {
     color: #fff;
@@ -621,7 +640,7 @@ a {
     align-self: flex-end;
   }
 }
-.modalEditProfile{
+.modalEditProfile {
   @media screen and (max-width: 700px) {
     width: 100%;
     height: auto;
@@ -634,7 +653,7 @@ a {
 .loginWrapper {
   width: 100%;
   height: 100vh;
-  background-color: rgb(241, 241, 241);
+  background-color: #000;
   padding: 10px;
   .loginbox {
     width: 70%;
@@ -649,7 +668,7 @@ a {
       transform: translate(-50%, 0%);
     }
     .errorMessage {
-      color: red;
+      color: rgb(255, 208, 237);
       font-size: 14px;
       margin-top: 10px;
     }
@@ -665,11 +684,15 @@ a {
         color: $primary_color;
         margin-bottom: 15px;
       }
+      p {
+        color: #fff;
+      }
     }
   }
 }
 .formWrapper {
-  background-color: #fff;
+  background: linear-gradient(135deg, #9f1f6e 0%, #ef6a35 100%);
+  backdrop-filter: blur(5px);
   border-radius: 5px;
   padding: 20px;
   display: flex;
@@ -678,21 +701,27 @@ a {
   padding-bottom: 40px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
   input {
-    outline: 1px solid $grey-2;
+    outline: 1px solid #fff;
     border: none;
     border-radius: 3px;
-    background-color: #fff;
     margin: 8px 0;
     height: 40px;
     padding: 0 8px;
     font-size: 18px;
-    color: $grey-2;
+    background-color: #ffffff54;
+    color: #fff;
+    &::placeholder {
+      color: #fff; /* or any color like #999, rgb(150,150,150), etc */
+      opacity: 1; /* optional: ensures full opacity */
+      font-size: 18px;
+    }
   }
+
   button {
     margin-top: 20px;
   }
-  .forgetPwd{
-    color: $primary_color;
+  .forgetPwd {
+    color: #fff;
     text-decoration: underline;
     font-size: 12px;
     margin-top: 12px;
@@ -716,12 +745,12 @@ a {
 .tools {
   width: 100%;
   margin-top: 40px;
-  background-color: rgb(246, 246, 246);
+  background: linear-gradient(135deg, #9f1f6e 0%, #ef6a35 100%);
   padding: 20px;
   border-radius: 4px;
   .row {
     display: flex;
-    color: $grey-1;
+    color: #fff;
     align-items: center;
     cursor: pointer;
     div {
@@ -764,7 +793,7 @@ a {
   overflow-y: auto; /* Enable vertical scroll */
   scroll-behavior: smooth;
   position: relative;
-  .inputForm{
+  .inputForm {
     position: fixed;
     bottom: 20px;
     left: 20px;
@@ -812,9 +841,9 @@ a {
   height: 400px;
   object-fit: cover;
   @media screen and (max-width: 700px) {
-        width: 100%;
-        height: auto;
-      }
+    width: 100%;
+    height: auto;
+  }
 }
 .mediaModal {
   display: flex;
@@ -842,13 +871,73 @@ a {
   }
 }
 
-
-.multiple{
+.multiple {
   margin-top: 100px;
 }
 
-.mediaError{
+.mediaError {
   margin-top: 100px;
   text-align: center;
   font-size: 15px;
+}
+.button {
+  background-color: #111; /* Deep black background */
+  color: #fff; /* White text */
+  border: 1px solid #444; /* Subtle border */
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  &:hover {
+    background-color: #222; /* Slightly lighter on hover */
+    border-color: #666;
+    transform: translateY(-2px); /* Small lift effect */
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.05);
+  }
+  &:active {
+    transform: translateY(0); /* Reset on click */
+    box-shadow: none;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+.loginButton{
+  margin-top: 10px;
+}
+.registerButton{
+  margin-top: 20px;
+}
+.button-2 {
+  background-color: transparent; /* Deep black background */
+  color: #fff; /* White text */
+  border: 1px solid #fff; /* Subtle border */
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  &:hover {
+    background-color: #e9e9e9; /* Slightly lighter on hover */
+    border-color: #e3e3e3;
+    transform: translateY(-2px); /* Small lift effect */
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.05);
+    color: #000;
+  }
+  &:active {
+    transform: translateY(0); /* Reset on click */
+    box-shadow: none;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
