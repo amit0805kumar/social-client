@@ -10,8 +10,6 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import { useSelector, useDispatch } from "react-redux";
 import { updateUser } from "../store/authSlice";
-import { use } from "react";
-import { set } from "date-fns";
 import { updateUserService } from "../services/userService";
 
 export default function EditProfile() {

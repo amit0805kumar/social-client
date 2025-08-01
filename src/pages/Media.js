@@ -41,7 +41,7 @@ export default function Media() {
         <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
           <div className="mediaModal">
             {selectedPost ? (
-              <Content onClick={()=>setModalOpen(false)} data={selectedPost} />
+              <Content controls={true} onClick={()=>setModalOpen(false)} data={selectedPost} />
             ) : (
               <Loader visible={true} />
             )}
