@@ -15,7 +15,7 @@ export function Multiple() {
     const urlRegex = /^(https?:\/\/[^\s/$.?#].[^\s]*)$/i;
 
     const urls = text
-      .split(",")
+      .split("\n")
       .map((url) => url.trim())
       .filter((url) => url !== "" && urlRegex.test(url));
     const response = await createMultiplePosts({ imgUrls: urls });
@@ -37,6 +37,7 @@ export function Multiple() {
         <Box
           component="form"
           onSubmit={handleSubmit}
+          className="multipleForm"
           sx={{
             maxWidth: 600,
             mx: "auto",

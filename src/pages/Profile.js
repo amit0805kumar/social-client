@@ -12,6 +12,7 @@ import {
   fetchUserByIdService,
 } from "../services/userService";
 import { fetchUserPosts } from "../services/postService";
+import Loader from "../components/Loader";
 
 export default function Profile() {
   const [profileUser, setProfileUser] = useState({});
@@ -117,5 +118,5 @@ export default function Profile() {
         </div>
       </div>
     </React.Fragment>
-  ) : null;
+  ) : <Loader visible={true} />;
 }
