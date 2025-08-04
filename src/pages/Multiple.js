@@ -7,26 +7,34 @@ import Loader from "../components/Loader";
 export function Multiple() {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
+  const [previewUrls, setPreviewUrls] = useState([]);
 
   const handleSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
     
-    const urlRegex = /^(https?:\/\/[^\s/$.?#].[^\s]*)$/i;
-
-    const urls = text
-      .split("\n")
-      .map((url) => url.trim())
-      .filter((url) => url !== "" && urlRegex.test(url));
-    const response = await createMultiplePosts({ imgUrls: urls });
+    const response = await createMultiplePosts({ imgUrls: previewUrls });
 
     if (response && response.success) {
       setText(""); // Clear the input field after successful submission
+      setPreviewUrls([]); // Clear the preview URLs
     } else {
       console.error("Failed to create multiple posts");
     }
     setLoading(false);
   };
+
+  const handleChange = (e) => {
+    const urlRegex = /^(https?:\/\/[^\s/$.?#].[^\s]*)$/i;
+
+    setText(e.target.value);
+    const urls = text
+      .split("\n")
+      .map((url) => url.trim())
+      .filter((url) => url !== "" && urlRegex.test(url));
+
+    setPreviewUrls(urls);
+  }
 
   return (
     <div>
@@ -61,7 +69,7 @@ export function Multiple() {
             rows={4}
             variant="outlined"
             value={text}
-            onChange={(e) => setText(e.target.value)}
+            onChange={handleChange}
             fullWidth
           />
 
@@ -69,6 +77,27 @@ export function Multiple() {
             Submit
           </Button>
         </Box>
+      </div>
+
+      <div className="preview">
+        <h2>Preview</h2>
+        <div className="previewContainer">
+          {previewUrls.length > 0 ? (
+            previewUrls.map((url, index) => 
+            {
+              return url.includes("mp4") ? (
+                <video key={index} autoPlay loop muted >
+                  <source src={url} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              ) : (
+                <img key={index} src={url} alt={`Preview ${index + 1}`}  />
+              )
+            })
+          ) : (
+            <p>No URLs to preview</p>
+          )}
+        </div>
       </div>
     </div>
   );
