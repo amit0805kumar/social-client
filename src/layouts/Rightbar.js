@@ -28,15 +28,12 @@ export default function Rightbar() {
   const dispatch = useDispatch();
   const friends = useSelector((state) => state.user?.followings) || [];
   const user = useSelector((state) => state.auth.user);
-  const token = useSelector((state) => state.auth.token);
-console.log("friends", friends);
   const fetchFriends = async () => {
       try {
         if (user && user.following) {
           dispatch(fetchFollowingsStart());
           const followings = await fetchFollowingUsersService(
-            user.following,
-            token
+            user.following
           );
           
           dispatch(fetchFollowingsSuccess(followings));

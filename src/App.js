@@ -15,26 +15,41 @@ import { Fragment } from "react";
 import Media from "./pages/Media";
 import { Multiple } from "./pages/Multiple";
 import ChangePassword from "./pages/ChangePassword";
+import { callApi } from "./helpers/Helpers";
 function App() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
-  const token = useSelector((state) => state.auth.token);
   const loading = useSelector((state) => state.auth.loading);
    const [authChecked, setAuthChecked] = useState(false);
  
 
-  useEffect(() => {
-    if(!user || !token) {
+useEffect(() => {
+    const checkAuth = async () => {
       dispatch(loginStart());
-      const fetchedUser = JSON.parse(localStorage.getItem("user"));
-      const fetchedToken = localStorage.getItem("token");
-      if (fetchedUser && fetchedToken) {
-        dispatch(loginSuccess({ user: fetchedUser, token: fetchedToken }));
-      } else {
-        dispatch(loginFailure("User not found or token missing"));
+      try {
+        // ✅ Call backend to verify user from HttpOnly cookie
+        const response = await callApi("GET", "/auth/authCheck");
+        if (response && response.isAuthenticated) {
+          dispatch(loginSuccess({ user: response.user })); // token no longer needed
+        } else {
+          dispatch(loginFailure("User not authenticated"));
+          <Navigate to="/login" replace />;
+        }
+      } catch (error) {
+        dispatch(loginFailure("Auth check failed"));
+        <Navigate to="/login" replace />;
+      } finally {
+        setAuthChecked(true);
       }
-      setAuthChecked(true);}
-  }, []);
+    };
+
+    if (!user) {
+      checkAuth();
+    } else {
+      setAuthChecked(true);
+    }
+  }, [user, dispatch]);
+
 
   if (!authChecked) return <Loader visible={true} />;
 

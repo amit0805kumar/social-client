@@ -1,6 +1,4 @@
-import * as React from "react";
 import { useEffect, useState } from "react";
-import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,6 +11,7 @@ export default function LoginUser() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { error } = useSelector((state) => state.auth);
+  const {isAuthenticated} = useSelector((state) => state.auth);
 
   const handleChange = (e) => {
     switch (e.target.name) {
@@ -33,12 +32,9 @@ export default function LoginUser() {
         const loggedUser = await loginUser(username, password);
         dispatch(
           loginSuccess({
-            user: loggedUser.user,
-            token: loggedUser.token,
-          })
+            user: loggedUser.user          })
         );
         localStorage.setItem("user", JSON.stringify(loggedUser.user));
-        localStorage.setItem("token", JSON.stringify(loggedUser.token));
         navigate("/");
       } else {
         alert("Invalid fields");
@@ -53,6 +49,12 @@ export default function LoginUser() {
     }
   };
 
+  useEffect(()=>{
+    console.log("isAuthenticated:", isAuthenticated);
+    if(isAuthenticated){
+      navigate("/");
+    }
+  },[isAuthenticated, navigate]);
 
   return (
     <div className="formWrapper">

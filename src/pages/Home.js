@@ -11,11 +11,10 @@ export default function Home() {
   const dispatch = useDispatch();
   const posts = useSelector((state) => state.post.posts);
   const user = useSelector((state) => state.auth.user);
-  const token = useSelector((state) => state.auth.token);
   const fetchPosts = async (userId) => {
     try {
        dispatch(fetchPostsStart());
-      const res = await fetchTimelinePosts(userId,token);      
+      const res = await fetchTimelinePosts(userId);      
       dispatch(fetchPostsSuccess(res))
     } catch (error) {
       dispatch(fetchPostsFailure(error.message));

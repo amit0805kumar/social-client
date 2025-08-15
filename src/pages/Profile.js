@@ -20,7 +20,6 @@ export default function Profile() {
   const loading = useSelector((state) => state.auth.loading);
 
   const user = useSelector((state) => state.auth.user);
-  const token = useSelector((state) => state.auth.token);
 
   const [followings, setFollowings] = useState([]);
   const [profilePosts, setProfilePosts] = useState([]);
@@ -30,7 +29,7 @@ export default function Profile() {
 
   const fetchUserById = async () => {
     try {
-      const res = await fetchUserByIdService(userId, token);
+      const res = await fetchUserByIdService(userId);
       setProfileUser(res);
 
       //Check whether user is a friend or not
@@ -69,7 +68,7 @@ export default function Profile() {
       if (!profileUser || !profileUser._id) {
         throw new Error("Profile user not found");
       }
-      const userposts = await fetchUserPosts(profileUser._id, token);
+      const userposts = await fetchUserPosts(profileUser._id);
       if (!userposts || userposts.length === 0) {
         throw new Error("No posts found for this user");
       }
@@ -84,8 +83,7 @@ export default function Profile() {
     try {
       if (profileUser && profileUser.following) {
         const followings = await fetchFollowingUsersService(
-          profileUser.following,
-          token
+          profileUser.following
         );
         setFollowings(followings);
       }

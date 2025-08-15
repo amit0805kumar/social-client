@@ -1,4 +1,3 @@
-import React from "react";
 import Friends from "../components/Friends";
 import Button from "@mui/material/Button";
 import GroupIcon from "@mui/icons-material/Group";
@@ -8,11 +7,9 @@ import { callApi } from "../helpers/Helpers";
 import EditProfile from "./EditProfile";
 import { useSelector, useDispatch } from "react-redux";
 import { updateUser } from "../store/authSlice";
-import ChangePassword from "../pages/ChangePassword";
 import ChangePasswordForm from "./ChangePasswordForm";
 export default function ProfileRightBar(props) {
   const user = useSelector((state) => state.auth.user);
-  const token = useSelector((state) => state.auth.token);
   const {
     profileUser,
     followings,
@@ -26,7 +23,7 @@ export default function ProfileRightBar(props) {
 
   const handleFriends = async (friends) => {
     if (friends) {
-      let res = await callApi("PATCH", `users/follow/${user._id}`, token, {
+      let res = await callApi("PATCH", `users/follow/${user._id}`, {
         followUserId: profileUser._id,
       });
       if(res.success) {
@@ -37,7 +34,6 @@ export default function ProfileRightBar(props) {
       let res = await callApi(
         "PATCH",
         `users/unfollow/${user._id}`,
-        token,
         {
           followUserId: profileUser._id,
         }

@@ -11,6 +11,8 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { logout } from "../store/authSlice";
 import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import { logoutUser } from "../services/authService";
 
 export default function Topbar() {
   const dispatch = useDispatch();
@@ -18,11 +20,14 @@ export default function Topbar() {
   const user = useSelector((state) => state.auth.user);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  const handleLogout = () => {
-    dispatch(logout());
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    navigate("/login");
+  const handleLogout = async () => {
+    const res = await logoutUser();
+    if(res.success){
+      await dispatch(logout());
+      Cookies.remove("token", { path: "/" });
+      Cookies.remove("user", { path: "/" });
+      navigate("/login");
+    }
   };
 
   useEffect(() => {

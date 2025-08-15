@@ -1,17 +1,17 @@
 import { callApi } from "../helpers/Helpers";
 
-export const createPostService = async (postData, token) => {
+export const createPostService = async (postData) => {
   try {
-    await callApi("POST", "posts", token, postData);
+    await callApi("POST", "posts", postData);
   } catch (error) {
     console.error("Error creating post:", error);
     throw new Error("Error creating post: " + error.message);
   }
 };
 
-export const fetchUserPosts = async (userId, token) => {
+export const fetchUserPosts = async (userId) => {
   try {
-    const response = await callApi("GET", `posts/user/${userId}`, token);
+    const response = await callApi("GET", `posts/user/${userId}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching user posts:", error);
@@ -19,9 +19,9 @@ export const fetchUserPosts = async (userId, token) => {
   }
 };
 
-export const fetchTimelinePosts = async (userId, token) => {
+export const fetchTimelinePosts = async (userId) => {
   try {
-    const response = await callApi("GET", `posts/all/${userId}`, token);
+    const response = await callApi("GET", `posts/all/${userId}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching timeline posts:", error);
@@ -29,15 +29,13 @@ export const fetchTimelinePosts = async (userId, token) => {
   }
 };
 
-export const updatePostService = async (loggedUserId, postData, token) => {
+export const updatePostService = async (loggedUserId, postData) => {
   try {
     const response = await callApi(
       "PATCH",
       `posts/${loggedUserId}`,
-      token,
       postData
     );
-    console.log("Post updated successfully:", response);
     if (response && response.success) {
       return response.data;
     } else {
@@ -49,18 +47,18 @@ export const updatePostService = async (loggedUserId, postData, token) => {
   }
 };
 
-export const deletePostService = async (postId, token) => {
+export const deletePostService = async (postId) => {
   try {
-    await callApi("DELETE", `posts/${postId}`, token);
+    await callApi("DELETE", `posts/${postId}`);
   } catch (error) {
     console.error("Error deleting post:", error);
     throw new Error("Error deleting post: " + error.message);
   }
 };
 
-export const deleteProfilePostService = async (userId, postId, token) => {
+export const deleteProfilePostService = async (userId, postId) => {
   try {
-    const response = await callApi("DELETE", `posts/${userId}`, token, {
+    const response = await callApi("DELETE", `posts/${userId}`, {
       postId
     });
     if (response && response.success) {
@@ -107,7 +105,7 @@ export const fetchAllPosts = async (page=1, limit=10) => {
 
 export const createMultiplePosts = async (data)=>{
   try{
-    const response = await callApi("POST", "posts/multiple", null, data);
+    const response = await callApi("POST", "posts/multiple", data);
     return response;
   }catch(error){
     console.error("Error creating multiple posts:", error);

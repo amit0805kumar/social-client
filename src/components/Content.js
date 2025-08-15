@@ -3,7 +3,7 @@ export function Content(props) {
   return (
     <div className="content" onClick={onClick}>
       {data.mediaType === "image" && data.img !== "" ? (
-        <img src={data.img} />
+        <img src={data.img} alt={data.img} />
       ) : (
         <video  className="postVideo" src={data.img} autoPlay controls={controls} muted loop></video>
       )}

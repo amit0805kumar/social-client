@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Button } from "@mui/material";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { registerUser } from "../services/authService";
+import { useSelector } from "react-redux";
 
 export default function RegisterUser() {
   const navigate = useNavigate();
@@ -12,6 +12,8 @@ export default function RegisterUser() {
   const [lastName, setLastName] = useState("");
   const [rePassword, setRePassword] = useState("");
   const [email, setEmail] = useState("");
+  const {isAuthenticated} = useSelector((state) => state.auth);
+
   const handleChange = (e) => {
     switch (e.target.name) {
       case "username":
@@ -38,13 +40,16 @@ export default function RegisterUser() {
   };
   useEffect(() => {
     // Reset fields on component mount
+    if(isAuthenticated){
+      navigate("/");
+    }
     setUsername("");
     setPassword("");
     setFirstName("");
     setLastName("");
     setRePassword("");
     setEmail("");
-  }, []);
+  }, [isAuthenticated, navigate]);
 
   const handleRegister = async () => {
     if (

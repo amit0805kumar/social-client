@@ -16,10 +16,9 @@ export default function Sidebar() {
   const user = useSelector((state) => state.auth.user);
   const [isAdmin, setIsAdmin] = useState(false)
 
-  const token = useSelector((state) => state.auth.token);
   const fetchAllSidebarUsers = async () => {
     try {
-      let allUsers = await fetchAllUsers(token);
+      let allUsers = await fetchAllUsers();
       setUser(allUsers.filter((data) => !user.following.includes(data._id)));
     } catch (error) {
       console.log(error);
@@ -28,7 +27,7 @@ export default function Sidebar() {
 
   useEffect(() => {
     fetchAllSidebarUsers();
-  }, []);
+  }, [user]);
   useEffect(()=>{
     if (user && user.isAdmin) {
       setIsAdmin(true);

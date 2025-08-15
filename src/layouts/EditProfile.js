@@ -23,7 +23,6 @@ export default function EditProfile() {
   const [state, setState] = React.useState("");
 
   const user = useSelector((state) => state.auth.user);
-  const token = useSelector((state) => state.auth.token);
 
   const dispatch = useDispatch();
 
@@ -58,8 +57,7 @@ export default function EditProfile() {
           city,
           state,
           relationshipStatus,
-        },
-        token
+        }
       );
 
       dispatch(updateUser({ user: updatedUser }));

@@ -1,11 +1,9 @@
-import * as React from "react";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { Button, Modal } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
 import PasswordIcon from "@mui/icons-material/Password";
 
-import { useDispatch, useSelector } from "react-redux";
+import {  useSelector } from "react-redux";
 import { changePasswordService } from "../services/userService";
 
 export default function ChangePasswordForm() {
@@ -15,7 +13,6 @@ export default function ChangePasswordForm() {
   const [oldPassword, setOldPassword] = useState("");
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
-  const token = useSelector((state) => state.auth.token);
   const user = useSelector((state) => state.auth.user);
 
   const handleOpen = () => {
@@ -39,7 +36,7 @@ export default function ChangePasswordForm() {
   const handleChangePassword = async () => {
     try {
       if (password !== "" && dpassword !== "" && password === dpassword) {
-        const res = await changePasswordService(user._id,oldPassword, password, token);
+        const res = await changePasswordService(user._id,oldPassword, password);
         if (res.success) {
           alert("Password changed successfully");
           setDpassword("");

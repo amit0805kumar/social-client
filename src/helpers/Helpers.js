@@ -1,64 +1,49 @@
 import axios from "axios";
 import constants from "../utils/constants";
 
-export const callApi = async (method, url, token, body) => {
-  const tk = await JSON.parse(localStorage.getItem("token"));
+// ✅ Configure Axios defaults for all requests
+axios.defaults.baseURL = constants.API_BASE_URL;
+axios.defaults.withCredentials = true; // ✅ include cookies in all requests
+
+export const callApi = async (method, url, body = null) => {
   try {
     let response;
 
     switch (method) {
       case "GET":
-        response = await axios.get(`${constants.API_BASE_URL}${url}`, {
-          headers: {
-            Authorization: `Bearer ${tk}`,
-          },
-        });
+        response = await axios.get(url);
         break;
+
       case "POST":
-        response = await axios.post(`${constants.API_BASE_URL}${url}`, body, {
-          headers: {
-            Authorization: `Bearer ${tk}`,
-          },
-        });
+        response = await axios.post(url, body);
         break;
+
       case "PUT":
-        response = await axios.put(`${constants.API_BASE_URL}${url}`, body, {
-          headers: {
-            Authorization: `Bearer ${tk}`,
-          },
-        });
+        response = await axios.put(url, body);
         break;
+
       case "PATCH":
-        response = await axios.patch(`${constants.API_BASE_URL}${url}`, body, {
-          headers: {
-            Authorization: `Bearer ${tk}`,
-          },
-        });
+        response = await axios.patch(url, body);
         break;
+
       case "DELETE":
-        response = await axios.delete(`${constants.API_BASE_URL}${url}`, {
-          data: body,
-          headers: {
-            Authorization: `Bearer ${tk}`,
-          },
-        });
+        response = await axios.delete(url, { data: body });
         break;
+
       default:
         throw new Error(`Unsupported method: ${method}`);
     }
 
-    return response.data; // ✅ only return the data
+    return response.data; // ✅ return API response data only
 
   } catch (error) {
-    console.log(error);
-    // Optionally return error.response.data for better feedback
-    return error?.response?.data || { success: false, message: 'Unknown error' };
+    console.error("API Error:", error.response || error.message);
+    return error?.response?.data || { success: false, message: "Unknown error" };
   }
 };
 
-
 export function shuffleArray(array) {
-  const shuffled = [...array]; // clone the array to avoid mutating original
+  const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];

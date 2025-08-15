@@ -25,7 +25,6 @@ export default function Share(props) {
 
   const [open, setOpen] = React.useState(false);
   const user = useSelector((state) => state.auth.user);
-  const token = useSelector((state) => state.auth.token);
 
   const [postDesc, setDesc] = useState("");
   const [imgUrl, setUrl] = useState("");
@@ -56,12 +55,14 @@ export default function Share(props) {
       case "mediaType":
         setMediaType(e.target.value);
         break;
+      default:
+        break;
     }
   };
 
   const createPost = async () => {
     try {
-      if (imgUrl == "" || !user._id) {
+      if (imgUrl === "" || !user._id) {
         alert("Invalid Media");
       } else {
         await createPostService(
@@ -72,8 +73,7 @@ export default function Share(props) {
             username: user.username,
             profilePicture: user.profilePicture,
             mediaType: mediaType,
-          },
-          token
+          }
         );
         window.location.reload();
       }

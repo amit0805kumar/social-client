@@ -41,7 +41,6 @@ export default function Post(props) {
   const [mediaType, setMediaType] = useState("image");
 
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.auth.token);
   const user = useSelector((state) => state.auth.user);
 
   const [loading, setLoading] = useState(false);
@@ -74,7 +73,7 @@ export default function Post(props) {
   const handleDeletePost = async () => {
     try {
       dispatch(updatePostStart());
-      let res = await deleteProfilePostService(user._id, data._id, token);
+      let res = await deleteProfilePostService(user._id, data._id);
       if (res) {
         dispatch(deletePost(data._id));
         dispatch(updateProfilePost(data._id));
@@ -106,11 +105,12 @@ export default function Post(props) {
     // Logic to handle post editing
     try {
       dispatch(updatePostStart());
-      const updatedPost = await updatePostService(
-        user._id,
-        { ...data, desc: postDesc, img: imgUrl, mediaType },
-        token
-      );
+      const updatedPost = await updatePostService(user._id, {
+        ...data,
+        desc: postDesc,
+        img: imgUrl,
+        mediaType,
+      });
 
       if (updatedPost) {
         dispatch(updatePost(updatedPost));
@@ -145,7 +145,6 @@ export default function Post(props) {
 
   return (
     <div className="postWrapper" key={data.id}>
-     
       <div className="header">
         <div className="col">
           <div className="profilepic_container">
@@ -261,8 +260,8 @@ export default function Post(props) {
         <p>{data.desc}</p>
       </div>
       <div className="media">
-         <Loader visible={loading} />
-        {data.mediaType === "image" && data.img != "" ? (
+        <Loader visible={loading} />
+        {data.mediaType === "image" && data.img !== "" ? (
           <img src={data.img} />
         ) : (
           <video
