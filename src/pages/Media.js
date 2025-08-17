@@ -6,9 +6,11 @@ import { Content } from "../components/Content";
 import { Modal } from "@mui/material";
 import Loader from "../components/Loader";
 import { shuffleArray } from "../helpers/Helpers";
+import MediaPlayMode from "../layouts/MediaPlayMode";
 
 export default function Media() {
   const loading = useSelector((state) => state.auth.loading);
+  const playMode = useSelector((state) => state.feature.playMode);
   const [posts, setPosts] = useState([]);
   const [selectedPost, setSelectedPost] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -25,7 +27,6 @@ export default function Media() {
     fetchPosts();
   }, []);
 
-
   useEffect(() => {
     if (user && user.isAdmin) {
       setIsAdmin(true);
@@ -34,41 +35,58 @@ export default function Media() {
     }
   }, [user]);
 
+  if (isAdmin && playMode && posts && posts.length > 0) {
+    return (
+      <React.Fragment>
+        <Topbar />
+        <MediaPlayMode posts={posts} />
+      </React.Fragment>
+    );
+  }
+
   return (
-    !loading  && (
+    !loading && (
       <React.Fragment>
         <Topbar />
         <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
           <div className="mediaModal">
             {selectedPost ? (
-              <Content controls={true} onClick={()=>setModalOpen(false)} data={selectedPost} />
+              <Content
+                controls={true}
+                onClick={() => setModalOpen(false)}
+                data={selectedPost}
+              />
             ) : (
               <Loader visible={true} />
             )}
           </div>
         </Modal>
-        
-        { isAdmin ? <div className="mediaWrapper">
-          <div className="scrollTrack">
-            <div className="mediaContainer">
-              {posts && posts.length > 0 ? (
-                posts.map((post) => (
-                  <Content
-                    onClick={() => {
-                      setSelectedPost(post);
-                      setModalOpen(true);
-                    }}
-                    data={post}
-                    key={post._id}
-                  />
-                ))
-              ) : (
-               <Loader visible={true} />
-              )}
+
+        {isAdmin ? (
+          <div className="mediaWrapper">
+            <div className="scrollTrack">
+              <div className="mediaContainer">
+                {posts && posts.length > 0 ? (
+                  posts.map((post) => (
+                    <Content
+                      onClick={() => {
+                        setSelectedPost(post);
+                        setModalOpen(true);
+                      }}
+                      data={post}
+                      key={post._id}
+                    />
+                  ))
+                ) : (
+                  <Loader visible={true} />
+                )}
+              </div>
             </div>
           </div>
-        </div> : <h1 className="mediaError">Media not available</h1>}
+        ) : (
+          <h1 className="mediaError">Media not available</h1>
+        )}
       </React.Fragment>
     )
-  )
+  );
 }

@@ -13,6 +13,9 @@ import { logout } from "../store/authSlice";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { logoutUser } from "../services/authService";
+import { togglePlayMode } from "../store/featureSlice";
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';    
+
 
 export default function Topbar() {
   const dispatch = useDispatch();
@@ -63,6 +66,9 @@ export default function Topbar() {
         <div className="icon">
           <ChatIcon />
         </div>
+        {isAdmin && <div className="icon" onClick={() => dispatch(togglePlayMode())}>
+          <PlayCircleIcon />
+        </div>}
         <div className="icon" onClick={handleLogout}>
           <LogoutIcon />
         </div>
