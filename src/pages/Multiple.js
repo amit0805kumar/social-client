@@ -1,23 +1,32 @@
 import React, { useState } from "react";
 import Topbar from "../layouts/Topbar";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControlLabel,
+  FormGroup,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { createMultiplePosts } from "../services/postService";
 import Loader from "../components/Loader";
+import Switch from "@mui/material/Switch";
 
 export function Multiple() {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [previewUrls, setPreviewUrls] = useState([]);
+  const [catbox, setCatbox] = useState(false);
 
   const handleSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
-    
+
     const response = await createMultiplePosts({ imgUrls: previewUrls });
 
     if (response && response.success) {
-      setText(""); // Clear the input field after successful submission
-      setPreviewUrls([]); // Clear the preview URLs
+      setText(""); 
+      setPreviewUrls([]); 
     } else {
       console.error("Failed to create multiple posts");
     }
@@ -27,14 +36,20 @@ export function Multiple() {
   const handleChange = (e) => {
     const urlRegex = /^(https?:\/\/[^\s/$.?#].[^\s]*)$/i;
 
-    setText(e.target.value);
+    setText(catbox ? formatTextForCatbox(e.target.value) : e.target.value);
     const urls = text
       .split("\n")
       .map((url) => url.trim())
       .filter((url) => url !== "" && urlRegex.test(url));
 
     setPreviewUrls(urls);
-  }
+  };
+
+  const formatTextForCatbox = (text) => {
+    const urls = text.match(/https:\/\/files\.catbox\.moe\/\S+\.mp4/g);
+    const result = urls ? urls.join("\n") : "";
+    return result;
+  };
 
   return (
     <div>
@@ -59,9 +74,18 @@ export function Multiple() {
             gap: 2,
           }}
         >
-          <Typography variant="h6" component="div">
-            Enter Media Urls
-          </Typography>
+          <div className="mediaFormHeader">
+            <Typography variant="h6" component="div">
+              Enter Media Urls
+            </Typography>
+            <FormGroup>
+              <FormControlLabel
+                control={<Switch checked={catbox} />}
+                label="Catbox"
+                onChange={(e) => setCatbox(e.target.checked)}
+              />
+            </FormGroup>
+          </div>
 
           <TextField
             label="Enter urls"
@@ -83,16 +107,15 @@ export function Multiple() {
         <h2>Preview</h2>
         <div className="previewContainer">
           {previewUrls.length > 0 ? (
-            previewUrls.map((url, index) => 
-            {
+            previewUrls.map((url, index) => {
               return url.includes("mp4") ? (
-                <video key={index} autoPlay loop muted >
+                <video key={index} autoPlay loop muted>
                   <source src={url} type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
               ) : (
-                <img key={index} src={url} alt={`Preview ${index + 1}`}  />
-              )
+                <img key={index} src={url} alt={`Preview ${index + 1}`} />
+              );
             })
           ) : (
             <p>No URLs to preview</p>
