@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Topbar from "../layouts/Topbar";
 import { useSelector } from "react-redux";
 import { fetchAllPosts } from "../services/postService";
@@ -9,84 +9,130 @@ import { shuffleArray } from "../helpers/Helpers";
 import MediaPlayMode from "../layouts/MediaPlayMode";
 
 export default function Media() {
-  const loading = useSelector((state) => state.auth.loading);
   const playMode = useSelector((state) => state.feature.playMode);
   const [posts, setPosts] = useState([]);
   const [selectedPost, setSelectedPost] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const user = useSelector((state) => state.auth.user);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const res = await fetchAllPosts(1, -1);
+  const loaderRef = useRef(null);
+  const observerRef = useRef(null); // Keep a single observer instance
+
+  const fetchPosts = async (pageNumber) => {
+    try {
+      setLoading(true);
+
+      const res = await fetchAllPosts(pageNumber, 10);
       if (res) {
-        setPosts(shuffleArray(res.posts));
+        if (!res.posts || res.posts.length === 0) {
+          setHasMore(false);
+        } else {
+          setPosts((prevPosts) => [...prevPosts, ...shuffleArray(res.posts)]);
+        }
       }
-    };
-    fetchPosts();
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Initial fetch
+  useEffect(() => {
+    fetchPosts(1);
   }, []);
 
+  // Admin check
   useEffect(() => {
-    if (user && user.isAdmin) {
-      setIsAdmin(true);
-    } else {
-      setIsAdmin(false);
-    }
+    setIsAdmin(user?.isAdmin || false);
   }, [user]);
 
-  if (isAdmin && playMode && posts && posts.length > 0) {
+  // Fetch more when page changes
+  useEffect(() => {
+    if (page > 1) fetchPosts(page);
+  }, [page]);
+
+  // IntersectionObserver for infinite scroll
+  useEffect(() => {
+    if (!loaderRef.current) return;
+
+    if (observerRef.current) {
+      observerRef.current.disconnect(); // Clear previous observer
+    }
+
+    observerRef.current = new IntersectionObserver((entries) => {
+      const firstEntry = entries[0];
+      if (firstEntry.isIntersecting && !loading && hasMore) {
+        setPage((prev) => prev + 1);
+      }
+    });
+
+    observerRef.current.observe(loaderRef.current);
+
+    return () => observerRef.current.disconnect();
+  }, [loading, hasMore]);
+
+  if (isAdmin && playMode && posts.length > 0) {
     return (
-      <React.Fragment>
+      <>
         <Topbar />
         <MediaPlayMode posts={posts} />
-      </React.Fragment>
+      </>
     );
   }
 
   return (
-    !loading && (
-      <React.Fragment>
-        <Topbar />
-        <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
-          <div className="mediaModal">
-            {selectedPost ? (
-              <Content
-                controls={true}
-                onClick={() => setModalOpen(false)}
-                data={selectedPost}
-              />
-            ) : (
-              <Loader visible={true} />
-            )}
-          </div>
-        </Modal>
+    <>
+      <Topbar />
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
+        <div className="mediaModal">
+          {selectedPost ? (
+            <Content
+              controls={true}
+              onClick={() => setModalOpen(false)}
+              data={selectedPost}
+            />
+          ) : (
+            <Loader visible={true} />
+          )}
+        </div>
+      </Modal>
 
-        {isAdmin ? (
-          <div className="mediaWrapper">
-            <div className="scrollTrack">
-              <div className="mediaContainer">
-                {posts && posts.length > 0 ? (
-                  posts.map((post) => (
-                    <Content
-                      onClick={() => {
-                        setSelectedPost(post);
-                        setModalOpen(true);
-                      }}
-                      data={post}
-                      key={post._id}
-                    />
-                  ))
-                ) : (
-                  <Loader visible={true} />
-                )}
-              </div>
+      {isAdmin ? (
+        <div className="mediaWrapper">
+          <div
+            className="scrollTrack"
+          >
+            <div className="mediaContainer">
+              {posts.length > 0 ? (
+                posts.map((post) => (
+                  <Content
+                    onClick={() => {
+                      setSelectedPost(post);
+                      setModalOpen(true);
+                    }}
+                    data={post}
+                    key={post._id}
+                  />
+                ))
+              ) : (
+                <Loader visible={true} />
+              )}
+            </div>
+
+            {/* Loader at bottom */}
+            <div ref={loaderRef} style={{ height: "50px" }}>
+              {loading && <Loader visible={true} />}
             </div>
           </div>
-        ) : (
-          <h1 className="mediaError">Media not available</h1>
-        )}
-      </React.Fragment>
-    )
+        </div>
+      ) : (
+        <h1 className="mediaError">Media not available</h1>
+      )}
+    </>
   );
 }

@@ -805,6 +805,8 @@ body{
 .scrollTrack {
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  height: calc(100vh - 10px);
 }
 
 .mediaContainer {

@@ -5,7 +5,11 @@ import Feed from "../layouts/Feed";
 import Rightbar from "../layouts/Rightbar";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { fetchPostsFailure, fetchPostsStart, fetchPostsSuccess } from "../store/postSlice";
+import {
+  fetchPostsFailure,
+  fetchPostsStart,
+  fetchPostsSuccess,
+} from "../store/postSlice";
 import { fetchTimelinePosts } from "../services/postService";
 export default function Home() {
   const dispatch = useDispatch();
@@ -13,9 +17,9 @@ export default function Home() {
   const user = useSelector((state) => state.auth.user);
   const fetchPosts = async (userId) => {
     try {
-       dispatch(fetchPostsStart());
-      const res = await fetchTimelinePosts(userId);      
-      dispatch(fetchPostsSuccess(res))
+      dispatch(fetchPostsStart());
+      const res = await fetchTimelinePosts(userId, 1, 100);
+      dispatch(fetchPostsSuccess(res.data));
     } catch (error) {
       dispatch(fetchPostsFailure(error.message));
       console.error("Error fetching posts:", error);

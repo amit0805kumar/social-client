@@ -69,10 +69,10 @@ export default function Profile() {
         throw new Error("Profile user not found");
       }
       const userposts = await fetchUserPosts(profileUser._id);
-      if (!userposts || userposts.length === 0) {
+      if (!userposts || userposts.posts?.length === 0) {
         throw new Error("No posts found for this user");
       }
-      setProfilePosts(userposts);
+      setProfilePosts(userposts.posts);
     } catch (error) {
       console.log(error);
       setProfilePosts([]);

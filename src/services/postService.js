@@ -9,9 +9,9 @@ export const createPostService = async (postData) => {
   }
 };
 
-export const fetchUserPosts = async (userId) => {
+export const fetchUserPosts = async (userId, page = 1, limit = 10) => {
   try {
-    const response = await callApi("GET", `posts/user/${userId}`);
+    const response = await callApi("GET", `posts/user/?id=${userId}&page=${page}&limit=${limit}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching user posts:", error);
@@ -19,9 +19,9 @@ export const fetchUserPosts = async (userId) => {
   }
 };
 
-export const fetchTimelinePosts = async (userId) => {
+export const fetchTimelinePosts = async (userId, page = 1, limit = 10) => {
   try {
-    const response = await callApi("GET", `posts/all/${userId}`);
+    const response = await callApi("GET", `posts/all/?id=${userId}&page=${page}&limit=${limit}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching timeline posts:", error);
