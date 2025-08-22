@@ -21,7 +21,7 @@ import { Navigate } from "react-router-dom";
 import { createPostService } from "../services/postService";
 
 export default function Share(props) {
-  const { posts, shareTopVisible } = props;
+  const { posts, shareTopVisible, loaderRef } = props;
 
   const [open, setOpen] = React.useState(false);
   const user = useSelector((state) => state.auth.user);
@@ -190,6 +190,7 @@ export default function Share(props) {
         ) : null}
         <div className="shareBottom ">
           {posts && posts.map((post) => <Post data={post} key={post._id} />)}
+           <div ref={loaderRef} style={{ height: "1px" }}></div>
         </div>
       </div>
     </div>

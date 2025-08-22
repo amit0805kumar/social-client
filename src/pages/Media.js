@@ -11,6 +11,7 @@ import MediaPlayMode from "../layouts/MediaPlayMode";
 export default function Media() {
   const playMode = useSelector((state) => state.feature.playMode);
   const [posts, setPosts] = useState([]);
+  const [movingPosts, setMovingPosts] = useState([]);
   const [selectedPost, setSelectedPost] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const user = useSelector((state) => state.auth.user);
@@ -22,17 +23,12 @@ export default function Media() {
   const loaderRef = useRef(null);
   const observerRef = useRef(null); // Keep a single observer instance
 
-  const fetchPosts = async (pageNumber) => {
+  const fetchPosts = async () => {
     try {
       setLoading(true);
-
-      const res = await fetchAllPosts(pageNumber, 10);
+      const res = await fetchAllPosts(1, -1);
       if (res) {
-        if (!res.posts || res.posts.length === 0) {
-          setHasMore(false);
-        } else {
-          setPosts((prevPosts) => [...prevPosts, ...shuffleArray(res.posts)]);
-        }
+        setPosts(shuffleArray(res.posts));
       }
     } catch (error) {
       console.error("Error fetching posts:", error);
@@ -43,8 +39,12 @@ export default function Media() {
 
   // Initial fetch
   useEffect(() => {
-    fetchPosts(1);
+    fetchPosts(page);
   }, []);
+
+  useEffect(() => {
+    setMovingPosts(posts.slice(0, 10));
+  }, [posts]);
 
   // Admin check
   useEffect(() => {
@@ -53,7 +53,9 @@ export default function Media() {
 
   // Fetch more when page changes
   useEffect(() => {
-    if (page > 1) fetchPosts(page);
+    if (page > 1) {
+      setMovingPosts((prevPost)=> [...prevPost, ...posts.slice((page - 1) * 10, page * 10)]);   
+    };
   }, [page]);
 
   // IntersectionObserver for infinite scroll
@@ -104,12 +106,10 @@ export default function Media() {
 
       {isAdmin ? (
         <div className="mediaWrapper">
-          <div
-            className="scrollTrack"
-          >
+          <div className="scrollTrack">
             <div className="mediaContainer">
-              {posts.length > 0 ? (
-                posts.map((post) => (
+              {movingPosts.length > 0 ? (
+                movingPosts.map((post) => (
                   <Content
                     onClick={() => {
                       setSelectedPost(post);

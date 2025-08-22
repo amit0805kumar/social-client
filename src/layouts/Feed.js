@@ -3,9 +3,9 @@ import {memo} from "react";
 
 function Feed(props) {
   return (
-    <div className="feed">
+    <div className="feed" ref={props.feedRef}>
       <div className="feedWrapper">
-        <Share shareTopVisible={props.shareTopVisible} posts={props.posts} />
+        <Share shareTopVisible={props.shareTopVisible} posts={props.posts} loaderRef={props.loaderRef}  />
       </div>
     </div>
   )
