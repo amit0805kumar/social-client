@@ -86,7 +86,7 @@ export default function Sidebar() {
             users.map((data) => {
               if (user._id !== data._id)
                 return (
-                  <Link to={`/profile/${data._id}`}>
+                  <Link to={`/profile/${data._id}`} key={data._id}>
                     <li key={data.id}>
                       <Avatar
                         sx={{ width: 25, height: 25 }}

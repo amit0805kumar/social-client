@@ -17,7 +17,7 @@ import { togglePlayMode } from "../store/featureSlice";
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';    
 
 
-export default function Topbar() {
+export default function Topbar({ showTopbar=true,showPlayBtn }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
@@ -42,7 +42,7 @@ export default function Topbar() {
   }, [user]);
 
   return user ? (
-    <div className="topbar_container">
+    <div className={`topbar_container ${showTopbar ? "" : "slideTopBar"}`}>
       <Link to="/">
         <h1 className="topbar_title">Social</h1>
       </Link>
@@ -66,7 +66,7 @@ export default function Topbar() {
         <div className="icon">
           <ChatIcon />
         </div>
-        {isAdmin && <div className="icon" onClick={() => dispatch(togglePlayMode())}>
+        {isAdmin && showPlayBtn && <div className="icon" onClick={() => dispatch(togglePlayMode())}>
           <PlayCircleIcon />
         </div>}
         <div className="icon" onClick={handleLogout}>

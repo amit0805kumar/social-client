@@ -19,6 +19,7 @@ export default function Media() {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [showTopbar, setShowTopbar] = useState(true);
 
   const loaderRef = useRef(null);
   const observerRef = useRef(null); // Keep a single observer instance
@@ -54,8 +55,11 @@ export default function Media() {
   // Fetch more when page changes
   useEffect(() => {
     if (page > 1) {
-      setMovingPosts((prevPost)=> [...prevPost, ...posts.slice((page - 1) * 10, page * 10)]);   
-    };
+      setMovingPosts((prevPost) => [
+        ...prevPost,
+        ...posts.slice((page - 1) * 10, page * 10),
+      ]);
+    }
   }, [page]);
 
   // IntersectionObserver for infinite scroll
@@ -78,10 +82,33 @@ export default function Media() {
     return () => observerRef.current.disconnect();
   }, [loading, hasMore]);
 
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    if (!scrollRef.current) return;
+
+    let lastScrollY = scrollRef.current.scrollTop;
+
+    const handleScroll = () => {
+  setShowTopbar((prev) => {
+    const scrollingUp = el.scrollTop < lastScrollY;
+    lastScrollY = el.scrollTop;
+    return scrollingUp ? true : false;
+  });
+};
+
+    const el = scrollRef.current;
+    el.addEventListener("scroll", handleScroll);
+
+    return () => {
+      el.removeEventListener("scroll", handleScroll);
+    };
+  }, [posts]);
+
   if (isAdmin && playMode && posts.length > 0) {
     return (
       <>
-        <Topbar />
+        <Topbar showPlayBtn={true} showTopbar={showTopbar} />
         <MediaPlayMode posts={posts} />
       </>
     );
@@ -89,7 +116,7 @@ export default function Media() {
 
   return (
     <>
-      <Topbar />
+      <Topbar showPlayBtn={true} showTopbar={showTopbar} />
       <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
         <div className="mediaModal">
           {selectedPost ? (
@@ -106,7 +133,7 @@ export default function Media() {
 
       {isAdmin ? (
         <div className="mediaWrapper">
-          <div className="scrollTrack">
+          <div className="scrollTrack" ref={scrollRef}>
             <div className="mediaContainer">
               {movingPosts.length > 0 ? (
                 movingPosts.map((post) => (

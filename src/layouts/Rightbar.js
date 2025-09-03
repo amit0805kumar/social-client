@@ -67,7 +67,7 @@ export default function Rightbar() {
         <h3>Friends online</h3>
         {friends && friends.map((user) => {
           return (
-            <Link key={user.id} to={`/profile/${user._id}`} style={{ textDecoration: "none" }}>
+            <Link key={user._id} to={`/profile/${user._id}`} style={{ textDecoration: "none" }}>
             <div className="list" >
               <StyledBadge
                 overlap="circular"
