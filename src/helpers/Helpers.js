@@ -49,4 +49,10 @@ export function shuffleArray(array) {
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
   return shuffled;
+  return shuffled.map(item => {
+    if (item.img && item.img.startsWith("https://idoxe3r.sufydely.com/") && !item.img.includes("/1/")) {
+      item.img = item.img.replace("https://idoxe3r.sufydely.com/", "https://idoxe3r.sufydely.com/1/");
+    }
+    return item;
+  });
 }

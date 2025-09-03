@@ -111,10 +111,10 @@ export default function Media() {
               {movingPosts.length > 0 ? (
                 movingPosts.map((post) => (
                   <Content
-                    onClick={() => {
-                      setSelectedPost(post);
-                      setModalOpen(true);
-                    }}
+                    // onClick={() => {
+                    //   setSelectedPost(post);
+                    //   setModalOpen(true);
+                    // }}
                     data={post}
                     key={post._id}
                   />

@@ -47,14 +47,14 @@ export const updatePostService = async (loggedUserId, postData) => {
   }
 };
 
-export const deletePostService = async (postId) => {
-  try {
-    await callApi("DELETE", `posts/${postId}`);
-  } catch (error) {
-    console.error("Error deleting post:", error);
-    throw new Error("Error deleting post: " + error.message);
-  }
-};
+// export const deletePostService = async (postId) => {
+//   try {
+//     await callApi("DELETE", `posts/${postId}`);
+//   } catch (error) {
+//     console.error("Error deleting post:", error);
+//     throw new Error("Error deleting post: " + error.message);
+//   }
+// };
 
 export const deleteProfilePostService = async (userId, postId) => {
   try {
