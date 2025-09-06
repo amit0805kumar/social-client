@@ -7,6 +7,8 @@ $grey-2: #626262;
   font-family: "Montserrat", sans-serif;
   padding: 0;
   box-sizing: border-box;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
 }
 a {
   text-decoration: none;
@@ -106,6 +108,7 @@ body {
   overflow-y: scroll;
   @media screen and (max-width: 700px) {
     order: 2;
+    padding: 0;
   }
   &::-webkit-scrollbar {
     display: none;
@@ -185,6 +188,9 @@ body {
             }
           }
         }
+        @media screen and (max-width: 700px) {
+          margin: 10px 10px;
+        }
       }
       .shareBottom {
         .postWrapper {
@@ -197,6 +203,7 @@ body {
           background-color: #000000;
           @media screen and (max-width: 700px) {
             padding: 8px 10px;
+            margin-bottom: 5px;
           }
           .header {
             display: flex;
@@ -881,12 +888,17 @@ body {
     height: auto;
     margin-bottom: 0;
     border-radius: 0;
+    margin-right: 0;
   }
 }
 
 .mediaContainer .content:hover {
   transform: scale(1.02);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  @media screen and (max-width: 700px) {
+    transform: none;
+    box-shadow: none;
+  }
 }
 
 .mediaContainer .content img,

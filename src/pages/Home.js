@@ -68,7 +68,7 @@ const feedContainerRef = useRef(null);
     {
       root: feedContainerRef.current, // scrollable element
       rootMargin: "200px",
-      threshold: 0,
+      threshold: 0.1,
     }
   );
 

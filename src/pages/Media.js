@@ -3,7 +3,6 @@ import Topbar from "../layouts/Topbar";
 import { useSelector } from "react-redux";
 import { fetchAllPosts } from "../services/postService";
 import { Content } from "../components/Content";
-import { Modal } from "@mui/material";
 import Loader from "../components/Loader";
 import { shuffleArray } from "../helpers/Helpers";
 import MediaPlayMode from "../layouts/MediaPlayMode";
@@ -12,8 +11,6 @@ export default function Media() {
   const playMode = useSelector((state) => state.feature.playMode);
   const [posts, setPosts] = useState([]);
   const [movingPosts, setMovingPosts] = useState([]);
-  const [selectedPost, setSelectedPost] = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
   const user = useSelector((state) => state.auth.user);
   const [isAdmin, setIsAdmin] = useState(false);
   const [page, setPage] = useState(1);
@@ -64,38 +61,48 @@ export default function Media() {
 
   // IntersectionObserver for infinite scroll
   useEffect(() => {
-    if (!loaderRef.current) return;
+    if (!loaderRef.current || !scrollRef.current) return;
 
     if (observerRef.current) {
-      observerRef.current.disconnect(); // Clear previous observer
+      observerRef.current.disconnect();
     }
 
-    observerRef.current = new IntersectionObserver((entries) => {
-      const firstEntry = entries[0];
-      if (firstEntry.isIntersecting && !loading && hasMore) {
-        setPage((prev) => prev + 1);
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        const firstEntry = entries[0];
+        if (firstEntry.isIntersecting && !loading && hasMore) {
+          setPage((prev) => prev + 1);
+        }
+      },
+      {
+        root: scrollRef.current, // ✅ observe inside scrollable div, not window
+        rootMargin: "100px", // ✅ preload before reaching loader
+        threshold: 0.1, // ✅ trigger when 10% visible
       }
-    });
+    );
 
     observerRef.current.observe(loaderRef.current);
 
-    return () => observerRef.current.disconnect();
-  }, [loading, hasMore]);
+    return () => {
+      if (observerRef.current) observerRef.current.disconnect();
+    };
+  }, [loading, hasMore, movingPosts]);
 
   const scrollRef = useRef(null);
 
+  // Show/hide topbar on scroll
   useEffect(() => {
     if (!scrollRef.current) return;
 
     let lastScrollY = scrollRef.current.scrollTop;
 
     const handleScroll = () => {
-  setShowTopbar((prev) => {
-    const scrollingUp = el.scrollTop < lastScrollY;
-    lastScrollY = el.scrollTop;
-    return scrollingUp ? true : false;
-  });
-};
+      setShowTopbar((prev) => {
+        const scrollingUp = el.scrollTop < lastScrollY;
+        lastScrollY = el.scrollTop;
+        return scrollingUp ? true : false;
+      });
+    };
 
     const el = scrollRef.current;
     el.addEventListener("scroll", handleScroll);
@@ -119,23 +126,18 @@ export default function Media() {
       <Topbar showPlayBtn={true} showTopbar={showTopbar} />
       {isAdmin ? (
         <div className="mediaWrapper" ref={scrollRef}>
-            <div className="mediaContainer">
-              {movingPosts.length > 0 ? (
-                movingPosts.map((post) => (
-                  <Content
-                    data={post}
-                    key={post._id}
-                  />
-                ))
-              ) : (
-                <Loader visible={true} />
-              )}
-            </div>
+          <div className="mediaContainer">
+            {movingPosts.length > 0 ? (
+              movingPosts.map((post) => <Content data={post} key={post._id} />)
+            ) : (
+              <Loader visible={true} />
+            )}
+          </div>
 
-            {/* Loader at bottom */}
-            <div ref={loaderRef} style={{ height: "50px" }}>
-              {loading && <Loader visible={true} />}
-            </div>
+          {/* Loader at bottom */}
+          <div ref={loaderRef} style={{ height: "50px" }}>
+            {loading && <Loader visible={true} />}
+          </div>
         </div>
       ) : (
         <h1 className="mediaError">Media not available</h1>
