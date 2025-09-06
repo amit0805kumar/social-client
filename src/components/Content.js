@@ -18,6 +18,33 @@ import {
 export function Content(props) {
   const { data, onClick, onComplete } = props;
   const videoRef = useRef(null);
+  const containerRef = useRef(null);
+
+  // ✅ Play video only when visible
+  useEffect(() => {
+    if (!videoRef.current || !containerRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (videoRef.current) {
+            if (entry.isIntersecting) {
+              videoRef.current.play().catch(() => {}); // avoid play() promise error
+            } else {
+              videoRef.current.pause();
+            }
+          }
+        });
+      },
+      { threshold: 0.6 } // play only when 60% of the video is visible
+    );
+
+    observer.observe(containerRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     if (onComplete) {
@@ -113,7 +140,7 @@ export function Content(props) {
   };
 
   return deleted ? null : (
-    <div className="content" onClick={onClick}>
+    <div className="content" onClick={onClick} ref={containerRef}>
       {mediaError ? (
         <div className="fallback-ui">
           <Loader visible={deleteLoader} />
@@ -131,9 +158,9 @@ export function Content(props) {
             ref={videoRef}
             className="postVideo"
             src={data.img}
-            autoPlay
             muted
             loop
+            playsInline
             onError={handleError}
             onLoadedMetadata={handleMetadata}
             onPlaying={handlePlaying}

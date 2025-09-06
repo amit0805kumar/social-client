@@ -117,31 +117,12 @@ export default function Media() {
   return (
     <>
       <Topbar showPlayBtn={true} showTopbar={showTopbar} />
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
-        <div className="mediaModal">
-          {selectedPost ? (
-            <Content
-              controls={true}
-              onClick={() => setModalOpen(false)}
-              data={selectedPost}
-            />
-          ) : (
-            <Loader visible={true} />
-          )}
-        </div>
-      </Modal>
-
       {isAdmin ? (
-        <div className="mediaWrapper">
-          <div className="scrollTrack" ref={scrollRef}>
+        <div className="mediaWrapper" ref={scrollRef}>
             <div className="mediaContainer">
               {movingPosts.length > 0 ? (
                 movingPosts.map((post) => (
                   <Content
-                    // onClick={() => {
-                    //   setSelectedPost(post);
-                    //   setModalOpen(true);
-                    // }}
                     data={post}
                     key={post._id}
                   />
@@ -155,7 +136,6 @@ export default function Media() {
             <div ref={loaderRef} style={{ height: "50px" }}>
               {loading && <Loader visible={true} />}
             </div>
-          </div>
         </div>
       ) : (
         <h1 className="mediaError">Media not available</h1>

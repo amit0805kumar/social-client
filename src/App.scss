@@ -791,9 +791,11 @@ body {
 }
 .mediaWrapper {
   height: 100vh;
-  overflow-y: auto; /* Enable vertical scroll */
   scroll-behavior: smooth;
   position: relative;
+    display: flex;
+  flex-direction: column;
+  overflow-y: auto;
   .inputForm {
     position: fixed;
     bottom: 20px;
@@ -801,13 +803,6 @@ body {
     z-index: 1000;
     background-color: pink;
   }
-}
-
-.scrollTrack {
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  height: calc(100vh - 10px);
 }
 
 .mediaContainer {
@@ -818,7 +813,8 @@ body {
   justify-content: center;
 }
 
-.mediaContainer .content {
+
+.mediaContainer .content  {
   height: 400px;
   overflow: hidden;
   cursor: pointer;
