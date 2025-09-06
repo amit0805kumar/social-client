@@ -30,6 +30,8 @@ import {
   likeAndUnlikePost,
 } from "../store/postSlice";
 import Loader from "./Loader";
+import { Content } from "./Content";
+
 
 export default function Post(props) {
   const { data } = props;
@@ -261,17 +263,7 @@ export default function Post(props) {
       </div>
       <div className="media">
         <Loader visible={loading} />
-        {data.mediaType === "image" && data.img !== "" ? (
-          <img src={data.img} />
-        ) : (
-          <video
-            className="postVideo"
-            src={data.img}
-            autoPlay
-            muted
-            loop
-          ></video>
-        )}
+         <Content data={data} showDelete={false} />
       </div>
       <div className="footer">
         <div className="actions" onClick={() => handleLikeUnlike()}>

@@ -17,7 +17,7 @@ body {
 }
 .topbar {
   &_container {
-    transition: all .3s ease;
+    transition: all 0.3s ease;
     width: 100%;
     background: linear-gradient(135deg, #9f1f6e 0%, #ef6a35 100%);
     height: 50px;
@@ -234,7 +234,7 @@ body {
             }
           }
           .postText {
-            margin: 14px 0;
+            margin: 10px 0;
             color: #fff;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -258,6 +258,33 @@ body {
             }
             .loaderWrapper {
               transform: translateY(-20%);
+            }
+            .mute-button,
+            .fullscreen-button,
+            .delete-button {
+              position: absolute;
+              bottom: 10px;
+              right: 35px;
+              z-index: 100;
+              background: none;
+              border: none;
+              cursor: pointer;
+              color: #fff;
+              cursor: pointer;
+              opacity: 0.7;
+              svg {
+                width: 20px;
+              }
+            }
+            .fullscreen-button {
+              right: 10px;
+            }
+            .delete-button {
+              left: 10px;
+              right: auto;
+              svg {
+                width: 15px;
+              }
             }
           }
           .footer {
@@ -793,7 +820,7 @@ body {
   height: 100vh;
   scroll-behavior: smooth;
   position: relative;
-    display: flex;
+  display: flex;
   flex-direction: column;
   overflow-y: auto;
   .inputForm {
@@ -813,8 +840,7 @@ body {
   justify-content: center;
 }
 
-
-.mediaContainer .content  {
+.mediaContainer .content {
   height: 400px;
   overflow: hidden;
   cursor: pointer;
@@ -824,7 +850,8 @@ body {
   transition: all 0.3s ease;
   position: relative;
   .mute-button,
-  .fullscreen-button,.delete-button {
+  .fullscreen-button,
+  .delete-button {
     position: absolute;
     bottom: 10px;
     right: 35px;
@@ -842,10 +869,10 @@ body {
   .fullscreen-button {
     right: 10px;
   }
-  .delete-button{
+  .delete-button {
     left: 10px;
     right: auto;
-    svg{
+    svg {
       width: 15px;
     }
   }
@@ -1032,14 +1059,14 @@ body {
   height: 100%;
   color: #fff;
   position: relative;
-  .url{
-    font-size:10px;
+  .url {
+    font-size: 10px;
     display: block;
     margin-top: 10px;
     width: 90px;
     word-wrap: break-word;
   }
-  button{
+  button {
     margin-top: 10px;
     padding: 5px 10px;
     background: rgba(255, 255, 255, 0.1);
@@ -1051,17 +1078,17 @@ body {
       background: rgba(255, 255, 255, 0.2);
     }
   }
-  .deleted{
-    background-color: #E6EE9C;
-    color: #9E9D24;
+  .deleted {
+    background-color: #e6ee9c;
+    color: #9e9d24;
   }
-  .loaderWrapper{
+  .loaderWrapper {
     position: absolute;
     width: 100%;
     height: 100%;
   }
 }
 
-.slideTopBar{
+.slideTopBar {
   transform: translateY(-100%);
 }

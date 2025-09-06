@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 
 export function Content(props) {
-  const { data, onClick, onComplete } = props;
+  const { data, onClick, onComplete, showDelete = true } = props;
   const videoRef = useRef(null);
   const containerRef = useRef(null);
 
@@ -36,7 +36,7 @@ export function Content(props) {
           }
         });
       },
-      { threshold: 0.6 } // play only when 60% of the video is visible
+      { threshold: 0.5 } // play only when 50% of the video is visible
     );
 
     observer.observe(containerRef.current);
@@ -177,9 +177,9 @@ export function Content(props) {
               <FullscreenIcon />
             )}
           </button>
-          <button className="delete-button" onClick={handleDelete}>
+         { showDelete && <button className="delete-button" onClick={handleDelete}>
             <DeleteIcon />
-          </button>
+          </button>}
         </React.Fragment>
       )}
 
