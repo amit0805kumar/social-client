@@ -4,7 +4,8 @@ const initialState = {
   followings: [],
   loading: false,
   error: null,
-  followers: []
+  followers: [],
+  profilePics: []
 };
 
 const userSlice = createSlice({
@@ -32,6 +33,17 @@ const userSlice = createSlice({
       } else {
         console.error("Invalid action type for updateFollowings");
       }
+    },
+    setProfilePics(state, action) {
+      state.profilePics = action.payload;
+      state.loading = false;
+    },
+    resetUserState(state) {
+      state.followings = [];
+      state.loading = false;
+      state.error = null;
+      state.followers = [];
+      state.profilePics = [];
     }
   },
 });
@@ -40,7 +52,9 @@ export const {
   fetchFollowingsStart,
   fetchFollowingsSuccess,
   fetchFollowingsFailure,
-  updateFollowings
+  updateFollowings,
+  resetUserState,
+  setProfilePics
 } = userSlice.actions;
 
 

@@ -10,11 +10,15 @@ import {
   fetchPostsSuccess,
 } from "../store/postSlice";
 import { fetchTimelinePosts } from "../services/postService";
+import { fetchProfilePicsService } from "../services/userService";
+import { setProfilePics } from "../store/userSlice";
 
 export default function Home() {
   const dispatch = useDispatch();
   const posts = useSelector((state) => state.post.posts);
   const user = useSelector((state) => state.auth.user);
+
+  const [profilePics, setLocalProfilePics] = useState([]);
 
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -22,9 +26,9 @@ export default function Home() {
 
   const observer = useRef(null);
   const loaderRef = useRef(null); // This will be our "sentinel" element
-const feedContainerRef = useRef(null); 
+  const feedContainerRef = useRef(null);
   const fetchPosts = useCallback(
-    async (userId, pageNum = 1) => {
+    async (userId, pageNum = 1,pics = profilePics) => {
       if (loading || !hasMore) return;
       try {
         setLoading(true);
@@ -34,7 +38,20 @@ const feedContainerRef = useRef(null);
         if (res.data.length === 0) {
           setHasMore(false);
         } else {
-          dispatch(fetchPostsSuccess([...posts, ...res.data]));
+          if (pics?.length > 0) {
+          res.data = res.data.map((post) => {
+            const profilePicObj = pics.find(
+              (pic) => pic.userId === String(post.userId)
+            );
+            return {
+              ...post,
+              profilePicture:
+                profilePicObj?.profilePicture || post.profilePicture,
+            };
+          });
+        }
+
+          dispatch(fetchPostsSuccess(res.data));
         }
       } catch (error) {
         dispatch(fetchPostsFailure(error.message));
@@ -43,49 +60,70 @@ const feedContainerRef = useRef(null);
         setLoading(false);
       }
     },
-    [dispatch, loading, hasMore, posts]
+    [dispatch, loading, hasMore, profilePics]
   );
+
+ const fetchProfilePics = async () => {
+  const pics = await fetchProfilePicsService();
+  if (pics) {
+    dispatch(setProfilePics(pics));
+    setLocalProfilePics(pics);
+  }
+  return pics; // ✅ return them so caller can use immediately
+};
 
   // Initial fetch
   useEffect(() => {
+      const run = async () => {
     if (user && user._id) {
-      fetchPosts(user._id, page);
+      const pics = await fetchProfilePics(); // get fresh pics
+      await fetchPosts(user._id, page, pics); // ✅ pass them directly
     }
-  }, [page,user]);
+  };
+  run();
+  }, [page, user]);
 
   // Observer for infinite scroll
- useEffect(() => {
-  if (!loaderRef.current) return;
+  useEffect(() => {
+    if (!loaderRef.current) return;
 
-  if (observer.current) observer.current.disconnect();
+    if (observer.current) observer.current.disconnect();
 
-  observer.current = new IntersectionObserver(
-    (entries) => {
-      if (entries[0].isIntersecting && hasMore && !loading) {
-        setPage((prev) => prev + 1);
+    observer.current = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loading) {
+          setPage((prev) => prev + 1);
+        }
+      },
+      {
+        root: feedContainerRef.current, // scrollable element
+        rootMargin: "200px",
+        threshold: 0.1,
       }
-    },
-    {
-      root: feedContainerRef.current, // scrollable element
-      rootMargin: "200px",
-      threshold: 0.1,
-    }
-  );
+    );
 
-  observer.current.observe(loaderRef.current);
+    observer.current.observe(loaderRef.current);
 
-  return () => observer.current.disconnect();
-}, [posts, hasMore, loading]);
-
+    return () => {
+      if (observer.current) {
+        observer.current.disconnect();
+      }
+    };
+  }, [posts, hasMore, loading]);
 
   return (
     <React.Fragment>
       <Topbar />
       <div className="homeContainer">
         <Sidebar />
-        <Feed posts={posts} shareTopVisible={true} loaderRef={loaderRef}  feedRef={feedContainerRef}  />
+        <Feed
+          posts={posts}
+          shareTopVisible={true}
+          loaderRef={loaderRef}
+          feedRef={feedContainerRef}
+        />
         <Rightbar />
-      </div>     
+      </div>
     </React.Fragment>
   );
 }

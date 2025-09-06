@@ -84,3 +84,13 @@ export const changePasswordService = async (
     throw error;
   }
 };
+
+export const fetchProfilePicsService = async () => {
+  try {
+    const response = await callApi("GET", `users/profilePics`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching profile pictures:", error);
+    throw error;
+  }
+}

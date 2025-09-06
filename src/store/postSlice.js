@@ -1,4 +1,4 @@
-import {createSlice} from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   posts: [],
   profilePosts: [],
@@ -6,7 +6,7 @@ const initialState = {
   error: null,
 };
 const postSlice = createSlice({
-  name: 'posts',
+  name: "posts",
   initialState,
   reducers: {
     fetchPostsStart(state) {
@@ -14,7 +14,7 @@ const postSlice = createSlice({
       state.error = null;
     },
     fetchPostsSuccess(state, action) {
-      state.posts = action.payload;
+      state.posts = [...state.posts, ...action.payload]; 
       state.loading = false;
     },
     fetchPostsFailure(state, action) {
@@ -30,7 +30,9 @@ const postSlice = createSlice({
       state.error = null;
     },
     updatePost(state, action) {
-      const index = state.posts.findIndex(post => post._id === action.payload._id);
+      const index = state.posts.findIndex(
+        (post) => post._id === action.payload._id
+      );
       if (index !== -1) {
         state.posts[index] = action.payload;
       }
@@ -43,7 +45,7 @@ const postSlice = createSlice({
     // This action is used to delete a post from the state
     // It filters out the post with the matching id
     deletePost(state, action) {
-      state.posts = state.posts.filter(post => post._id !== action.payload);
+      state.posts = state.posts.filter((post) => post._id !== action.payload);
     },
 
     setProfilePostStart(state) {
@@ -60,33 +62,44 @@ const postSlice = createSlice({
       state.error = action.payload;
     },
     updateProfilePost(state, action) {
-      const index = state.profilePosts.findIndex(post => post._id === action.payload._id);
+      const index = state.profilePosts.findIndex(
+        (post) => post._id === action.payload._id
+      );
       if (index !== -1) {
         state.profilePosts[index] = action.payload;
       }
     },
     deleteProfilePost(state, action) {
-      state.profilePosts = state.profilePosts.filter(post => post._id !== action.payload);
+      state.profilePosts = state.profilePosts.filter(
+        (post) => post._id !== action.payload
+      );
     },
     addProfilePost(state, action) {
       state.profilePosts.unshift(action.payload);
     },
-    likeAndUnlikePost(state,action){
+    likeAndUnlikePost(state, action) {
       state.loading = false;
-      const index = state.posts.findIndex(post => post._id === action.payload._id);
-      
+      const index = state.posts.findIndex(
+        (post) => post._id === action.payload._id
+      );
+
       if (index !== -1) {
         const post = state.posts[index];
         if (post.likes.includes(action.payload.userId)) {
-          post.likes = post.likes.filter(id => id !== action.payload.userId);
+          post.likes = post.likes.filter((id) => id !== action.payload.userId);
         } else {
           post.likes.push(action.payload.userId);
         }
         state.posts[index] = post;
       }
       state.loading = false;
-    }
-
+    },
+    resetPosts(state) {
+      state.posts = [];
+      state.profilePosts = [];
+      state.loading = false;
+      state.error = null;
+    },
   },
 });
 export const {
@@ -104,6 +117,7 @@ export const {
   updateProfilePost,
   deleteProfilePost,
   addProfilePost,
-  likeAndUnlikePost
+  likeAndUnlikePost,
+  resetPosts,
 } = postSlice.actions;
 export default postSlice.reducer;

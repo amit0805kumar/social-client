@@ -15,6 +15,8 @@ import Cookies from "js-cookie";
 import { logoutUser } from "../services/authService";
 import { togglePlayMode } from "../store/featureSlice";
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';    
+import { resetUserState } from "../store/userSlice";
+import { resetPosts } from "../store/postSlice";
 
 
 export default function Topbar({ showTopbar=true,showPlayBtn }) {
@@ -27,6 +29,8 @@ export default function Topbar({ showTopbar=true,showPlayBtn }) {
     const res = await logoutUser();
     if(res.success){
       await dispatch(logout());
+      await dispatch(resetUserState());
+      await dispatch(resetPosts());
       Cookies.remove("token", { path: "/" });
       Cookies.remove("user", { path: "/" });
       navigate("/login");
