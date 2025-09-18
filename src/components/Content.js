@@ -16,9 +16,29 @@ import {
 } from "@mui/material";
 
 export function Content(props) {
-  const { data, onClick, onComplete, showDelete = true } = props;
+  const {
+    data,
+    onClick,
+    onComplete,
+    showDelete = true,
+    muted = true,
+    controls = false,
+    fullScreen = false,
+  } = props;
   const videoRef = useRef(null);
   const containerRef = useRef(null);
+
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!document.fullscreenElement);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () =>
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  }, []);
 
   // ✅ Play video only when visible
   useEffect(() => {
@@ -56,6 +76,9 @@ export function Content(props) {
         return () => clearTimeout(timer); // Cleanup on unmount/change
       } else if (data.mediaType === "video" && videoRef.current) {
         const videoEl = videoRef.current;
+        if (fullScreen && !isFullscreen) {
+          videoEl.requestFullscreen().catch(() => {});
+        }
         const handleEnded = () => {
           console.log("Video ended");
           onComplete && onComplete(); // Trigger when video ends
@@ -68,7 +91,7 @@ export function Content(props) {
         };
       }
     }
-  }, [data.mediaType, data.img]);
+  }, [data.mediaType, data.img, fullScreen, isFullscreen]);
 
   const [isMuted, setIsMuted] = useState(true);
   const [hasAudio, setHasAudio] = useState(false);
@@ -119,6 +142,8 @@ export function Content(props) {
       } else {
         setHasAudio(false);
       }
+      video.muted = muted; // respect initial mute prop
+      setIsMuted(muted);
     }
   };
 
@@ -161,9 +186,11 @@ export function Content(props) {
             muted
             loop
             playsInline
+            autoPlay
             onError={handleError}
             onLoadedMetadata={handleMetadata}
             onPlaying={handlePlaying}
+            controls={controls}
           ></video>
           {hasAudio && (
             <button className="mute-button" onClick={toggleMute}>
@@ -177,9 +204,11 @@ export function Content(props) {
               <FullscreenIcon />
             )}
           </button>
-         { showDelete && <button className="delete-button" onClick={handleDelete}>
-            <DeleteIcon />
-          </button>}
+          {showDelete && (
+            <button className="delete-button" onClick={handleDelete}>
+              <DeleteIcon />
+            </button>
+          )}
         </React.Fragment>
       )}
 

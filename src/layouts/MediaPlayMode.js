@@ -33,19 +33,25 @@ useEffect(() => {
   }, [posts.length]);
 
 useEffect(()=>{
-    setCurrentPost(posts[currentIndex]);
+    if(posts[currentIndex].mediaType === 'video'){
+      setCurrentPost(posts[currentIndex]);
+    }else{
+      // Skip to next if not video
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % posts.length);
+    }
 },[currentIndex, posts])
 
   return (
     <div className="playmodeWrapper">
         <Content
-          key={currentPost._id}
           data={currentPost}
           loop={false}
           muted={false}
+          controls={true}
           onComplete={()=>{
             setCurrentIndex((prevIndex) => (prevIndex + 1) % posts.length);
           }}
+          fullScreen={true}
         />
     </div>
   );
