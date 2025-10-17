@@ -96,7 +96,7 @@ export default function ProfileRightBar(props) {
         <div className="friends_list">
           {followings && followings.length  ?
             followings.map((user) => {
-              return (
+              return user && (
                 <Link to={`/profile/${user._id}`} key={user._id}>
                   <Friends key={user._id} data={user} />
                 </Link>

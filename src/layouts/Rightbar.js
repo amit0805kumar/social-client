@@ -66,7 +66,7 @@ export default function Rightbar() {
       <div className="friendsWrapper">
         <h3>Friends online</h3>
         {friends && friends.map((user) => {
-          return (
+          return user && (
             <Link key={user._id} to={`/profile/${user._id}`} style={{ textDecoration: "none" }}>
             <div className="list" >
               <StyledBadge
