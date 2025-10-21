@@ -16,6 +16,8 @@ import Media from "./pages/Media";
 import { Multiple } from "./pages/Multiple";
 import ChangePassword from "./pages/ChangePassword";
 import { callApi } from "./helpers/Helpers";
+import Redgif from "./pages/Redgif";
+import MultipleGif from "./pages/MultipleGif";
 function App() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
@@ -72,6 +74,12 @@ useEffect(() => {
             }
           />
           <Route
+            path="/multiplegif"
+            element={
+              <PrivateRoute  Component={MultipleGif} />
+            }
+          />
+          <Route
           path="/media"
           element={<PrivateRoute Component={Media} />}
           />
@@ -79,6 +87,7 @@ useEffect(() => {
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/register" element={<Register />} />
           <Route exact path="/forgot-password" element={<ChangePassword />} />
+          <Route exact path="/redgif" element={<PrivateRoute Component={Redgif} />} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

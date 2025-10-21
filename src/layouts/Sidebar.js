@@ -72,10 +72,12 @@ export default function Sidebar() {
             <EventAvailableIcon fontSize="small" />
             <p>Events</p>
           </li>
-          <li>
-            <LibraryBooksIcon fontSize="small" />
-            <p>Courses</p>
-          </li>
+         { isAdmin && <Link to="/redgif">
+           <li>
+             <LibraryBooksIcon fontSize="small" />
+             <p>Redgif</p>
+           </li>
+         </Link>}
           <li>
             <button className="showmore">Show more</button>
           </li>

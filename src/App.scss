@@ -1130,3 +1130,26 @@ body {
   object-fit: contain !important; /* Fullscreen mode - fit without cropping */
   background: black; /* Optional: prevent white bars around */
 }
+
+.gifPlayer{
+  position: relative;
+  width: 100%;
+  height: 93vh;
+  iframe{
+    // position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.previewContainer{
+  display: flex;
+  flex-wrap: wrap;
+  .gifPlayer{
+    width: 200px;
+    height: 200px;
+    margin: 5px;
+  }
+}
