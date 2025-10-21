@@ -12,7 +12,7 @@ export default function MultipleGif() {
     setText(e.target.value);
     const urls = e.target.value
       .split("\n")
-      .map((url) => "https://www.redgifs.com/ifr/" + url.trim());
+      .map((url) => url.trim().replace("watch", "ifr"));
 
     setPreviewUrls(urls);
   };
@@ -20,7 +20,7 @@ export default function MultipleGif() {
   const handleSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
-    const response = await createGifs({ gifCodes: text.split("\n").map((code) => code.trim())});
+    const response = await createGifs({ gifCodes: text.split("\n").map((code) => code.trim().replace("https://www.redgifs.com/watch/",""))});
     console.log(response);
     if (response && response.length > 0) {
       setText(""); 
