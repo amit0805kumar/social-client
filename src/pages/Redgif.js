@@ -20,7 +20,7 @@ export default function Redgif() {
   const fetchData = async (pageNum = 1) => {
     try {
       setLoading(true);
-      const res = await fetchGifs(5);
+      const res = await fetchGifs(30);
       if (res?.data?.length > 0) {
         setGifs(res.data);
         setHasMore(true);
