@@ -2,8 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import Topbar from "../layouts/Topbar";
 import { useSelector } from "react-redux";
 import Loader from "../components/Loader";
-import { shuffleArray } from "../helpers/Helpers";
-import MediaPlayMode from "../layouts/MediaPlayMode";
 import GifPlayer from "../layouts/GifPlayer";
 import { fetchGifs } from "../services/gifservice";
 
@@ -16,16 +14,19 @@ export default function Redgif() {
   const [hasMore, setHasMore] = useState(true);
   const [showTopbar, setShowTopbar] = useState(true);
 
-  const loaderRef = useRef(null);
-  const observerRef = useRef(null); // Keep a single observer instance
+  const scrollRef = useRef(null);
 
-  const fetchData = async () => {
+  // Fetch GIFs for a specific page
+  const fetchData = async (pageNum = 1) => {
     try {
       setLoading(true);
-      const res = await fetchGifs();
-      if (res) {
+      const res = await fetchGifs(5);
+      if (res?.data?.length > 0) {
         setGifs(res.data);
-    }
+        setHasMore(true);
+      } else {
+        setHasMore(false);
+      }
     } catch (error) {
       console.error("Error fetching gifs:", error);
     } finally {
@@ -35,47 +36,53 @@ export default function Redgif() {
 
   // Initial fetch
   useEffect(() => {
-    fetchData();
+    fetchData(1);
   }, []);
-
-
 
   // Admin check
   useEffect(() => {
     setIsAdmin(user?.isAdmin || false);
   }, [user]);
 
-  // Fetch more when page changes
+  // Fetch when page changes
   useEffect(() => {
-    if (page > 1) {
-     
+    if (page >= 1) {
+      fetchData(page);
     }
   }, [page]);
 
-  const scrollRef = useRef(null);
+  // Arrow key navigation
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (loading) return;
+
+      if (e.key === "ArrowRight") {
+        if (hasMore) setPage((prev) => prev + 1);
+      } else if (e.key === "ArrowLeft") {
+        setPage((prev) => (prev > 1 ? prev - 1 : 1));
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [loading, hasMore]);
 
   // Show/hide topbar on scroll
   useEffect(() => {
     if (!scrollRef.current) return;
-
     let lastScrollY = scrollRef.current.scrollTop;
 
     const handleScroll = () => {
-      setShowTopbar((prev) => {
-        const scrollingUp = el.scrollTop < lastScrollY;
-        lastScrollY = el.scrollTop;
-        return scrollingUp ? true : false;
-      });
+      const el = scrollRef.current;
+      const scrollingUp = el.scrollTop < lastScrollY;
+      setShowTopbar(scrollingUp);
+      lastScrollY = el.scrollTop;
     };
 
     const el = scrollRef.current;
     el.addEventListener("scroll", handleScroll);
-
-    return () => {
-      el.removeEventListener("scroll", handleScroll);
-    };
-  }, [gifs]);
-
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <>
@@ -83,12 +90,17 @@ export default function Redgif() {
       {isAdmin ? (
         <div className="mediaWrapper" ref={scrollRef}>
           <div className="mediaContainer">
-            { gifs.length > 0 ? gifs.map(gif=> <GifPlayer code={gif.gifCode} key={gif._id} />) : <p>No GIFs available</p> }
+            {loading ? (
+              <Loader visible={true} />
+            ) : gifs.length > 0 ? (
+              gifs.map((gif) => <GifPlayer code={gif.gifCode} key={gif._id} />)
+            ) : (
+              <p>No GIFs available</p>
+            )}
           </div>
-
-          {/* Loader at bottom */}
-          <div ref={loaderRef} style={{ height: "50px" }}>
-            {loading && <Loader visible={true} />}
+          <div style={{ textAlign: "center", marginTop: "10px", color: "#777" }}>
+            <p>Page {page}</p>
+            <p>Use ← and → arrow keys to navigate</p>
           </div>
         </div>
       ) : (

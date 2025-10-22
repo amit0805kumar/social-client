@@ -1,8 +1,8 @@
 import { callApi } from "../helpers/Helpers";
 
-export const fetchGifs = async (page = 0, limit = 10) => {
+export const fetchGifs = async (limit = 10) => {
   try {
-    const response = await callApi("GET", `gif/all?page=${page}&limit=${limit}`);
+    const response = await callApi("GET", `gif/all?limit=${limit}`);
     if (response && response.success) {
       return response.data;
     } else {
