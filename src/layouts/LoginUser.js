@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginStart, loginFailure, loginSuccess } from "../store/authSlice";
@@ -12,6 +12,10 @@ export default function LoginUser() {
   const [password, setPassword] = useState("");
   const { error } = useSelector((state) => state.auth);
   const {isAuthenticated} = useSelector((state) => state.auth);
+
+   if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
 
   const handleChange = (e) => {
     switch (e.target.name) {
@@ -32,9 +36,9 @@ export default function LoginUser() {
         const loggedUser = await loginUser(username, password);
         dispatch(
           loginSuccess({
-            user: loggedUser.user          })
+            user: loggedUser.user          
+          })
         );
-        localStorage.setItem("user", JSON.stringify(loggedUser.user));
         navigate("/");
       } else {
         alert("Invalid fields");
@@ -48,13 +52,6 @@ export default function LoginUser() {
       console.error("Login failed:", error);
     }
   };
-
-  useEffect(()=>{
-    console.log("isAuthenticated:", isAuthenticated);
-    if(isAuthenticated){
-      navigate("/");
-    }
-  },[isAuthenticated, navigate]);
 
   return (
     <div className="formWrapper">

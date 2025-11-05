@@ -11,7 +11,7 @@ import {
 } from "../store/postSlice";
 import { fetchTimelinePosts } from "../services/postService";
 import { fetchProfilePicsService } from "../services/userService";
-import { setProfilePics } from "../store/userSlice";
+// import { setProfilePics } from "../store/userSlice";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -28,7 +28,7 @@ export default function Home() {
   const loaderRef = useRef(null); // This will be our "sentinel" element
   const feedContainerRef = useRef(null);
   const fetchPosts = useCallback(
-    async (userId, pageNum = 1,pics = profilePics) => {
+    async (userId, pageNum = 1, pics = profilePics) => {
       if (loading || !hasMore) return;
       try {
         setLoading(true);
@@ -39,17 +39,17 @@ export default function Home() {
           setHasMore(false);
         } else {
           if (pics?.length > 0) {
-          res.data = res.data.map((post) => {
-            const profilePicObj = pics.find(
-              (pic) => pic.userId === String(post.userId)
-            );
-            return {
-              ...post,
-              profilePicture:
-                profilePicObj?.profilePicture || post.profilePicture,
-            };
-          });
-        }
+            res.data = res.data.map((post) => {
+              const profilePicObj = pics.find(
+                (pic) => pic.userId === String(post.userId)
+              );
+              return {
+                ...post,
+                profilePicture:
+                  profilePicObj?.profilePicture || post.profilePicture,
+              };
+            });
+          }
 
           dispatch(fetchPostsSuccess(res.data));
         }
@@ -63,25 +63,26 @@ export default function Home() {
     [dispatch, loading, hasMore, profilePics]
   );
 
- const fetchProfilePics = async () => {
-  const pics = await fetchProfilePicsService();
-  if (pics) {
-    dispatch(setProfilePics(pics));
-    setLocalProfilePics(pics);
-  }
-  return pics; // ✅ return them so caller can use immediately
-};
+  const fetchProfilePics = async () => {
+    const pics = await fetchProfilePicsService();
+    if (pics) {
+      // dispatch(setProfilePics(pics));
+      setLocalProfilePics(pics);
+    }
+    return pics; // ✅ return them so caller can use immediately
+  };
 
   // Initial fetch
-  useEffect(() => {
-      const run = async () => {
-    if (user && user._id) {
-      const pics = await fetchProfilePics(); // get fresh pics
-      await fetchPosts(user._id, page, pics); // ✅ pass them directly
+ useEffect(() => {
+  const run = async () => {
+    if (user?._id) {
+      const pics = await fetchProfilePics();
+      await fetchPosts(user._id, page, pics);
     }
   };
   run();
-  }, [page, user]);
+  // Only refetch when page changes or user ID changes
+}, [page, user?._id]);
 
   // Observer for infinite scroll
   useEffect(() => {

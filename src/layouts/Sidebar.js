@@ -15,6 +15,7 @@ export default function Sidebar() {
   const [users, setUser] = useState([]);
   const user = useSelector((state) => state.auth.user);
   const [isAdmin, setIsAdmin] = useState(false)
+  const {isAuthenticated} = useSelector((state) => state.auth);
 
   const fetchAllSidebarUsers = async () => {
     try {
@@ -36,7 +37,7 @@ export default function Sidebar() {
     }
   },[user]);
 
-  return (
+  return isAuthenticated && (
     <div className="sidebar">
       <div className="sidebarWrapper">
         <ul className="sidebar_list">
@@ -84,7 +85,7 @@ export default function Sidebar() {
           <hr />
 
           <h5 className="suggetionHeading">Suggestions</h5>
-          {users &&
+          {users && users.length > 0 &&
             users.map((data) => {
               if (user._id !== data._id)
                 return (
