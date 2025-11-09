@@ -3,8 +3,6 @@ import VolumeMuteIcon from "@mui/icons-material/VolumeMute";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
-import { deleteProfilePostService } from "../services/postService";
-import Loader from "./Loader";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Dialog,
@@ -14,6 +12,8 @@ import {
   Button,
   Typography,
 } from "@mui/material";
+import Loader from "./Loader";
+import { deleteProfilePostService, getRandomAudio } from "../services/postService";
 
 export function Content(props) {
   const {
@@ -25,14 +25,23 @@ export function Content(props) {
     controls = false,
     fullScreen = false,
   } = props;
+
   const videoRef = useRef(null);
   const containerRef = useRef(null);
+  const sampleAudioRef = useRef(null);
 
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
+  const [hasAudio, setHasAudio] = useState(false);
+  const [sampleAudio, setSampleAudio] = useState(null);
+  const [deleted, setDeleted] = useState(false);
+  const [deleteLoader, setDeleteLoader] = useState(false);
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [mediaError, setMediaError] = useState(false);
 
   useEffect(() => {
     const handleFullscreenChange = () => {
-      setIsFullscreen(!document.fullscreenElement);
+      setIsFullscreen(!!document.fullscreenElement);
     };
 
     document.addEventListener("fullscreenchange", handleFullscreenChange);
@@ -40,7 +49,7 @@ export function Content(props) {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
   }, []);
 
-  // ✅ Play video only when visible
+  // ✅ Auto play/pause based on visibility
   useEffect(() => {
     if (!videoRef.current || !containerRef.current) return;
 
@@ -49,120 +58,104 @@ export function Content(props) {
         entries.forEach((entry) => {
           if (videoRef.current) {
             if (entry.isIntersecting) {
-              videoRef.current.play().catch(() => {}); // avoid play() promise error
+              videoRef.current.play().catch(() => {});
             } else {
               videoRef.current.pause();
             }
           }
         });
       },
-      { threshold: 0.5 } // play only when 50% of the video is visible
+      { threshold: 0.5 }
     );
 
     observer.observe(containerRef.current);
-
-    return () => {
-      observer.disconnect();
-    };
+    return () => observer.disconnect();
   }, []);
 
+  // ✅ Completion handler
   useEffect(() => {
     if (onComplete) {
       if (data.mediaType === "image") {
-        const timer = setTimeout(() => {
-          onComplete && onComplete(); // Trigger after 5 sec for image
-        }, 5000);
-
-        return () => clearTimeout(timer); // Cleanup on unmount/change
+        const timer = setTimeout(onComplete, 5000);
+        return () => clearTimeout(timer);
       } else if (data.mediaType === "video" && videoRef.current) {
         const videoEl = videoRef.current;
-        if (fullScreen && !isFullscreen) {
-          videoEl.requestFullscreen().catch(() => {});
-        }
-        const handleEnded = () => {
-          console.log("Video ended");
-          onComplete && onComplete(); // Trigger when video ends
-        };
-
+        const handleEnded = () => onComplete && onComplete();
         videoEl.addEventListener("ended", handleEnded);
-
-        return () => {
-          videoEl.removeEventListener("ended", handleEnded); // Cleanup
-        };
+        return () => videoEl.removeEventListener("ended", handleEnded);
       }
     }
-  }, [data.mediaType, data.img, fullScreen, isFullscreen]);
+  }, [data.mediaType, data.img]);
 
-  const [isMuted, setIsMuted] = useState(true);
-  const [hasAudio, setHasAudio] = useState(false);
-  const [deleted, setDeleted] = useState(false);
-  const [deleteLoader, setDeleteLoader] = useState(false);
-  const [openConfirm, setOpenConfirm] = useState(false);
-
-  const toggleMute = () => {
+  // ✅ Check if video has audio
+  const checkAudio = async () => {
     const video = videoRef.current;
-    if (video) {
-      video.muted = !video.muted;
-      setIsMuted(video.muted);
+    if (!video) return;
+
+    const hasSound =
+      video.mozHasAudio ||
+      video.webkitAudioDecodedByteCount > 0 ||
+      (video.audioTracks && video.audioTracks.length > 0);
+
+    if (hasSound) {
+      setHasAudio(true);
+    } else {
+      const randomAudio = await getRandomAudio();
+      setSampleAudio(randomAudio);
+      setHasAudio(false);
     }
+
+    video.muted = muted;
+    setIsMuted(muted);
   };
 
-  const handleMetadata = () => {
-    checkAudio();
-  };
+  // ✅ Called when metadata or playback starts
+  const handleMetadata = () => checkAudio();
+  const handlePlaying = () => checkAudio();
 
-  const handlePlaying = () => {
-    checkAudio();
-  };
-
-  const handleDelete = () => {
-    setOpenConfirm(true);
-  };
-
-  const handleConfirmClose = () => setOpenConfirm(false);
-
-  const deletePost = async () => {
-    setDeleteLoader(true);
-    const res = await deleteProfilePostService(data.userId, data._id);
-    if (res) {
-      setDeleted(true);
-    }
-    setDeleteLoader(false);
-  };
-
-  const checkAudio = () => {
+  // ✅ Mute/unmute video and sample audio together
+  const toggleMute = async () => {
     const video = videoRef.current;
-    if (video) {
-      if (
-        video.mozHasAudio ||
-        video.webkitAudioDecodedByteCount > 0 ||
-        (video.audioTracks && video.audioTracks.length > 0)
-      ) {
-        setHasAudio(true);
+    if (!video) return;
+
+    video.muted = !video.muted;
+    setIsMuted(video.muted);
+
+    // If there’s a sample audio
+    if (sampleAudioRef.current) {
+      if (!video.muted) {
+        try {
+          await sampleAudioRef.current.play();
+        } catch (err) {
+          console.warn("Sample audio play blocked:", err.message);
+        }
       } else {
-        setHasAudio(false);
+        sampleAudioRef.current.pause();
       }
-      video.muted = muted; // respect initial mute prop
-      setIsMuted(muted);
     }
   };
 
   const toggleFullscreen = () => {
     const video = videoRef.current;
-    if (video) {
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-      } else {
-        video.requestFullscreen();
-      }
+    if (!video) return;
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      video.requestFullscreen();
     }
   };
 
-  const [mediaError, setMediaError] = useState(false);
+  const handleDelete = () => setOpenConfirm(true);
+  const handleConfirmClose = () => setOpenConfirm(false);
 
-  const handleError = () => {
-    setMediaError(true);
+  const deletePost = async () => {
+    setDeleteLoader(true);
+    const res = await deleteProfilePostService(data.userId, data._id);
+    if (res) setDeleted(true);
+    setDeleteLoader(false);
   };
+
+  const handleError = () => setMediaError(true);
 
   return deleted ? null : (
     <div className="content" onClick={onClick} ref={containerRef}>
@@ -171,14 +164,12 @@ export function Content(props) {
           <Loader visible={deleteLoader} />
           <p>Media failed to load</p>
           <p className="url">{data.img}</p>
-          <button onClick={handleDelete} className={deleted ? "deleted" : ""}>
-            {deleted ? "Deleted" : "Delete"}
-          </button>
+          <button onClick={handleDelete}>Delete</button>
         </div>
-      ) : data.mediaType === "image" && data.img !== "" ? (
+      ) : data.mediaType === "image" ? (
         <img src={data.img} alt="Media" onError={handleError} />
       ) : (
-        <React.Fragment>
+        <>
           <video
             ref={videoRef}
             className="postVideo"
@@ -187,50 +178,51 @@ export function Content(props) {
             loop
             playsInline
             autoPlay
+            controls={controls}
             onError={handleError}
             onLoadedMetadata={handleMetadata}
             onPlaying={handlePlaying}
-            controls={controls}
-          ></video>
-          {hasAudio && (
+          />
+          {/* ✅ sample audio element (lazy-loaded) */}
+          {sampleAudio && (
+           <audio ref={sampleAudioRef} preload="auto">
+  <source src={sampleAudio} type="audio/mpeg" />
+  Your browser does not support the audio element.
+</audio>
+          )}
+          {hasAudio || sampleAudio ? (
             <button className="mute-button" onClick={toggleMute}>
               {isMuted ? <VolumeOffIcon /> : <VolumeMuteIcon />}
             </button>
-          )}
+          ) : null}
           <button className="fullscreen-button" onClick={toggleFullscreen}>
-            {document.fullscreenElement ? (
-              <FullscreenExitIcon />
-            ) : (
-              <FullscreenIcon />
-            )}
+            {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
           </button>
           {showDelete && (
             <button className="delete-button" onClick={handleDelete}>
               <DeleteIcon />
             </button>
           )}
-        </React.Fragment>
+        </>
       )}
 
-      {/* ✅ Dialog placed outside conditional */}
+      {/* Confirmation dialog */}
       <Dialog
         open={openConfirm}
         onClose={handleConfirmClose}
         aria-labelledby="delete-confirm-title"
-        className="delete-dialog"
         PaperProps={{
           sx: {
-            backgroundColor: "#1e1e1e", // Dark background
-            color: "#fff", // White text
-            borderRadius: 2, // Optional rounded corners
+            backgroundColor: "#1e1e1e",
+            color: "#fff",
+            borderRadius: 2,
           },
         }}
       >
         <DialogTitle id="delete-confirm-title">Confirm Deletion</DialogTitle>
         <DialogContent>
           <Typography>
-            Are you sure you want to delete this post? This action cannot be
-            undone.
+            Are you sure you want to delete this post? This action cannot be undone.
           </Typography>
         </DialogContent>
         <DialogActions>

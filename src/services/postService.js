@@ -1,4 +1,5 @@
 import { callApi } from "../helpers/Helpers";
+import constants from "../utils/constants";
 
 export const createPostService = async (postData) => {
   try {
@@ -111,4 +112,8 @@ export const createMultiplePosts = async (data)=>{
     console.error("Error creating multiple posts:", error);
     throw new Error("Error creating multiple posts: " + error.message);
   }
+}
+
+export const getRandomAudio = async () => {
+  return constants.SOCIAL_2_BASE_URL + `audio${Math.floor(Math.random() * 6) + 1}.mp3`;
 }
