@@ -24,6 +24,8 @@ export function Content(props) {
     muted = true,
     controls = false,
     fullScreen = false,
+    muteBgAudio,
+    loop = true
   } = props;
 
   const videoRef = useRef(null);
@@ -98,8 +100,10 @@ export function Content(props) {
       (video.audioTracks && video.audioTracks.length > 0);
 
     if (hasSound) {
+     if(muteBgAudio) muteBgAudio(true);
       setHasAudio(true);
     } else {
+      if(muteBgAudio) muteBgAudio(false);
       const randomAudio = await getRandomAudio();
       setSampleAudio(randomAudio);
       setHasAudio(false);
@@ -175,7 +179,7 @@ export function Content(props) {
             className="postVideo"
             src={data.img}
             muted
-            loop
+            loop={loop}
             playsInline
             autoPlay
             controls={controls}
