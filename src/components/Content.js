@@ -35,7 +35,6 @@ export function Content(props) {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [hasAudio, setHasAudio] = useState(false);
-  const [sampleAudio, setSampleAudio] = useState(null);
   const [deleted, setDeleted] = useState(false);
   const [deleteLoader, setDeleteLoader] = useState(false);
   const [openConfirm, setOpenConfirm] = useState(false);
@@ -104,8 +103,6 @@ export function Content(props) {
       setHasAudio(true);
     } else {
       if(muteBgAudio) muteBgAudio(false);
-      const randomAudio = await getRandomAudio();
-      setSampleAudio(randomAudio);
       setHasAudio(false);
     }
 
@@ -187,14 +184,7 @@ export function Content(props) {
             onLoadedMetadata={handleMetadata}
             onPlaying={handlePlaying}
           />
-          {/* ✅ sample audio element (lazy-loaded) */}
-          {sampleAudio && (
-           <audio ref={sampleAudioRef} preload="auto">
-  <source src={sampleAudio} type="audio/mpeg" />
-  Your browser does not support the audio element.
-</audio>
-          )}
-          {hasAudio || sampleAudio ? (
+          {hasAudio ? (
             <button className="mute-button" onClick={toggleMute}>
               {isMuted ? <VolumeOffIcon /> : <VolumeMuteIcon />}
             </button>
